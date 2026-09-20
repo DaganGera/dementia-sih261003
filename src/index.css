@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ── 1. Central MindCare Color System ──────────────────────────── */
+  --mc-bg: #FAF9F4;             /* Warm off-white: main application background */
+  --mc-surface: #FFFFFF;        /* Clean pure white for readable cards */
+  --mc-surface-warm: #F4EBD7;   /* Warm cream: secondary sections */
+
+  --mc-primary: #176B61;        /* Dark Teal: primary actions, CTAs, important UI */
+  --mc-primary-hover: #12564E;  /* Darker teal hover */
+  --mc-primary-text: #FFFFFF;   /* Crisp white text on primary teal */
+
+  --mc-text: #26332F;           /* Primary text: dark charcoal / green-black */
+  --mc-text-secondary: #66736D; /* Secondary text: muted gray-green */
+
+  /* ── 2. Muted Pastel Surfaces ───────────────────────────────────── */
+  --mc-cream: #F4EBD7;          /* Warm cream */
+  --mc-rose: #EFD4D3;           /* Dusty rose: assistant containers, highlights, people */
+  --mc-blue: #DCEEEF;           /* Pale blue: activities, listening state, places */
+  --mc-lavender: #E4E5F4;       /* Soft lavender: memory, secondary info */
+  --mc-sage: #DDE9D9;           /* Soft sage: positive, active nav, ready, routines */
+  --mc-peach: #F8E9D9;          /* Pale peach: reminders, warm tags */
+
+  /* ── 3. Borders & Alerts ────────────────────────────────────────── */
+  --mc-border: #E4DED4;         /* Subtle non-intrusive borders */
+  --mc-border-input: #DDD9D0;   /* Input borders */
+  --mc-border-focus: #B7D4CC;   /* Input focus ring */
+  --mc-alert-caution: #F4E4C8;  /* Caution banner */
+  --mc-alert-sos: #D9A7A8;      /* Emergency SOS */
+  --mc-alert-resolved: #DDE9D9; /* Resolved alert */
+  --mc-progress-track: #E5E1D8; /* Progress bar track */
+
+  /* Legacy variable mappings maintained for compatibility */
+  --mindcare-blossom: #EFD4D3;
+  --mindcare-burning-sand: #176B61;
+  --mindcare-cherub: #FAF9F4;
+  --mindcare-dutch-white: #F4EBD7;
+  --mindcare-pancho: #E4DED4;
+  --mindcare-sandy-beach: #F8E9D9;
+  --mindcare-perano: #DCEEEF;
+  --mindcare-spun-pearl: #66736D;
+  --mindcare-surf-crest: #DDE9D9;
+  --mindcare-viola: #D9A7A8;
+  --mindcare-vista-blue: #DDE9D9;
+  --mindcare-wistful: #E4E5F4;
+}
+
+@layer base {
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #FAF9F4;
+    color: #26332F;
+  }
+
+  html[data-text-size="small"] {
+    font-size: 14px;
+  }
+
+  html[data-text-size="medium"] {
+    font-size: 16px;
+  }
+
+  html[data-text-size="large"] {
+    font-size: 18.5px;
+  }
+
+  /* High Contrast Accessibility Mode */
+  html.high-contrast-mode {
+    filter: contrast(130%);
+  }
+
+  html.high-contrast-mode body {
+    background-color: #000000 !important;
+    color: #ffff00 !important;
+  }
+
+  html.high-contrast-mode button,
+  html.high-contrast-mode a,
+  html.high-contrast-mode div {
+    border-color: #ffff00 !important;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
