@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crop Test</title>
+  <style>
+    body {
+      background-color: #FAF7F2;
+      margin: 0;
+      padding: 20px;
+      font-family: sans-serif;
+    }
+    .grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .item {
+      border: 1px solid #ccc;
+      padding: 10px;
+      background: #FAF7F2;
+    }
+    svg {
+      display: block;
+      border: 1px dashed red;
+    }
+  </style>
+</head>
+<body>
+  <h2>Siroi Flower Extraction Test</h2>
+  <div class="grid">
+    <div class="item">
+      <h3>1. Logo (viewBox: 484 56 60 54)</h3>
+      <svg viewBox="484 56 60 54" width="120" height="108" style="mix-blend-mode: multiply;">
+        <image href="/images/siroi-bg.jpg" width="1024" height="572" />
+      </svg>
+    </div>
+    <div class="item">
+      <h3>2. Top Right (viewBox: 810 32 214 395)</h3>
+      <svg viewBox="810 32 214 395" width="214" height="395" style="mix-blend-mode: multiply;">
+        <image href="/images/siroi-bg.jpg" width="1024" height="572" />
+      </svg>
+    </div>
+    <div class="item">
+      <h3>3. Bottom Left (viewBox: 0 355 185 217)</h3>
+      <svg viewBox="0 355 185 217" width="185" height="217" style="mix-blend-mode: multiply;">
+        <image href="/images/siroi-bg.jpg" width="1024" height="572" />
+      </svg>
+    </div>
+    <div class="item">
+      <h3>4. Bottom Right (viewBox: 850 375 174 197)</h3>
+      <svg viewBox="850 375 174 197" width="174" height="197" style="mix-blend-mode: multiply;">
+        <image href="/images/siroi-bg.jpg" width="1024" height="572" />
+      </svg>
+    </div>
+  </div>
+</body>
+</html>
