@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Hillpath: offline memory care for North East India</title>
+    <meta name="description" content="Memory activities, reminders and honest screening support for people living with dementia in North East India, in family voices, without internet." />
+    <link rel="canonical" href="%SITE_ORIGIN%/" />
+    <meta name="theme-color" content="#FFFFFF" />
+    <meta name="color-scheme" content="light" />
+    <link rel="alternate" hreflang="en" href="%SITE_ORIGIN%/" />
+    <link rel="alternate" hreflang="x-default" href="%SITE_ORIGIN%/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Hillpath" />
+    <meta property="og:title" content="Hillpath: offline memory care for North East India" />
+    <meta property="og:description" content="Memory activities, reminders and honest screening support for people living with dementia, in family voices, without internet." />
+    <meta property="og:url" content="%SITE_ORIGIN%/" />
+    <meta property="og:image" content="%SITE_ORIGIN%/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A green valley with a river and a stone bridge, and the words Hillpath, offline memory care." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Hillpath: offline memory care for North East India" />
+    <meta name="twitter:description" content="Memory activities, reminders and honest screening support for people living with dementia, in family voices, without internet." />
+    <meta name="twitter:image" content="%SITE_ORIGIN%/og-image.jpg" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <link rel="preload" as="image" href="/media/hero/poster-600x800.webp" media="(max-aspect-ratio: 1/1)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/media/hero/poster-1600.webp" media="(min-aspect-ratio: 1/1)" fetchpriority="high" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          { "@type": "WebSite", "name": "Hillpath", "url": "%SITE_ORIGIN%/", "inLanguage": "en" },
+          {
+            "@type": "SoftwareApplication",
+            "name": "Hillpath",
+            "applicationCategory": "HealthApplication",
+            "operatingSystem": "Android",
+            "description": "Offline memory activities, reminders and screening support for people living with dementia. A prototype, not a medical device.",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+          }
+        ]
+      }
+    </script>
+    <script>document.documentElement.classList.remove('no-js')</script>
+    <style>
+      /* The poster paints from plain HTML, so it is the first large element on screen and does not wait for JavaScript. */
+      html { background: #fff; }
+      #poster-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+      #poster-box { position: absolute; inset: auto 0 0 0; top: 300px; }
+      #poster-box img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      #poster-box::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, #fff, rgba(255, 255, 255, 0) 50%, #fff); }
+    </style>
+  </head>
+  <body>
+    <div id="poster-layer" aria-hidden="true">
+      <div id="poster-box">
+        <picture>
+          <source media="(max-aspect-ratio: 1/1)" srcset="/media/hero/poster-600x800.webp" />
+          <img id="poster-img" src="/media/hero/poster-1600.webp" alt="" width="1600" height="890" fetchpriority="high" decoding="async" />
+        </picture>
+      </div>
+    </div>
+    <a class="skip-link" href="#main">Skip to the content</a>
+    <div id="root"></div>
+    <noscript>
+      <style>.no-js .reveal { opacity: 1; transform: none; }</style>
+      <main id="main" style="max-width: 40rem; margin: 0 auto; padding: 96px 24px">
+        <p style="font-family: 'Instrument Serif', serif; font-size: 3rem; line-height: 1">Hillpath</p>
+        <h1 style="font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 2.5rem; line-height: 1">Memory care in familiar voices, even offline.</h1>
+        <p style="color: #6f6f6f; margin-top: 24px">Memory activities and reminders for people living with dementia, with messages recorded by family, and no internet needed. This page works best with JavaScript on. Read about <a href="/privacy/">privacy</a> and <a href="/limitations/">limitations</a>.</p>
+        <img src="/media/hero/poster-1600.webp" alt="A green valley with a river and a stone bridge" width="1600" height="890" style="width: 100%; height: auto; margin-top: 32px" />
+      </main>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

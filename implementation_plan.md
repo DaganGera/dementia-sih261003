@@ -118,6 +118,24 @@ The user asked to finish the project as fast as possible using this plan, with t
 | Speed choices (ADR-001) | Dexie replaces SQLite WASM; a small hash router replaces TanStack Router; native accessible elements replace React Aria; typed English string modules replace Fluent; SVG charts replace uPlot. | Each was a listed fallback or a low-risk swap. Bets BET-1 and BET-4 are not attempted. |
 | Android | The APK needs Android Studio and a JDK 21 (H-05). An agent cannot install them. The Capacitor project is scaffolded; the build waits for H-05. | No device test of alarms or camera until the user installs the toolchain. |
 
+### 0.10 Build status (2026-09-22)
+
+A first build of P0 exists in this folder. Read `docs/status.md` for the requirement-by-requirement state with evidence, `docs/known-gaps.md` for what does not work, and `README.md` for commands.
+
+Differences from this plan, beyond 0.9:
+
+| Plan | Built | Why |
+|---|---|---|
+| 10 games, 5 in P0 | The same 5 (G1, G2, G3, G4, G7) | P1 games need cultural review and rights-cleared assets |
+| Time machine in P1 | Built early, in the app at `#/demo` | The simulator was ready and it is the strongest demo beat |
+| Sudden-change rule per domain | A pooled rule for sparse play, z above 3.5, plus the family checklist | The per-domain rule needs daily data; measured sensitivity 22 of 30 (target 0.9 not met) |
+| M2 trained on LASI-DAD, then NACC | Trained on simulator output, tagged Simulated everywhere | Decision Q4 |
+| Relay client in the sync ladder | Relay server and D1 adapter built and tested; client not wired; QR is the only transport | Time |
+| Animated fountain-coded QR | Looping QR pages, any order, gzip first | Simpler and works with a plain scanner |
+| Visit mode, FHIR, doctor report, voice answers, postcards | Not built | P1 and P2 |
+| Landing scrub technique spike S-LAND | Canvas image sequence chosen without measuring the two alternatives | Time; numbers in `docs/landing-media.md` |
+| Sections 6 and 7 of the landing page use product screenshots | Real captures of the built app, produced by `apps/app/scripts/capture-landing.mjs` | As specified |
+
 ## 1. Product thesis and jury strategy
 
 ### 1.1 Thesis

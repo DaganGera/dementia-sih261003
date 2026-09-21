@@ -1,0 +1,42 @@
+{
+ "check": {
+  "width": 824,
+  "height": 1830
+ },
+ "game-pairs": {
+  "width": 824,
+  "height": 1378
+ },
+ "game-faces": {
+  "width": 824,
+  "height": 1438
+ },
+ "game-story": {
+  "width": 824,
+  "height": 1380
+ },
+ "game-routine": {
+  "width": 824,
+  "height": 1398
+ },
+ "game-find": {
+  "width": 824,
+  "height": 1116
+ },
+ "patient-home": {
+  "width": 824,
+  "height": 832
+ },
+ "dashboard": {
+  "width": 824,
+  "height": 1830
+ },
+ "screening": {
+  "width": 824,
+  "height": 1830
+ },
+ "sync": {
+  "width": 824,
+  "height": 1830
+ }
+}

@@ -72,7 +72,7 @@ describe('M1 ability model', () => {
     const c = chooseLevel({ model: initialModel(), gameId: 'G1', lastIndex: null, lastRoundRate: null, rand: rng(3) });
     expect(c.index).toBeLessThanOrEqual(1);
     expect(c.reason).toMatch(/successes in 10/);
-    expect(c.reason).not.toMatch(/[–—]/);
+    expect(c.reason).not.toMatch(new RegExp('[\\u2013\\u2014]'));
   });
 
   it('ignores trials that cannot be failed and never produces NaN', () => {

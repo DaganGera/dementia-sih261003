@@ -42,7 +42,7 @@ describe('M2 safety behaviour', () => {
     const text = JSON.stringify(explainForFamily(e)).toLowerCase();
     expect(text).not.toMatch(/you have|diagnos(is|ed) as|is fine|nothing wrong/);
     expect(text).toContain('not a diagnosis');
-    expect(text).not.toMatch(/[–—]/);
+    expect(text).not.toMatch(new RegExp('[\\u2013\\u2014]'));
   });
 
   it('grows intervals only up to the mass limit', () => {

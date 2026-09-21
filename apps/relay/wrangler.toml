@@ -1,0 +1,9 @@
+name = "hillpath-relay"
+main = "src/worker.ts"
+compatibility_date = "2026-09-01"
+
+# Create the database once with `wrangler d1 create hillpath-relay`, then paste its id here.
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "hillpath-relay"
+# database_id = ""

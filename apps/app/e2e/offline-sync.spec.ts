@@ -117,7 +117,7 @@ test('two offline devices pair, sync, play and show the result to the family', a
   // Let the family phone's clock reach the reminder time, then read the week.
   await a.clock.fastForward('05:00');
   await a.goto('/#/caregiver/home');
-  await expect(a.getByText(/1 activities on 1 days/)).toBeVisible();
+  await expect(a.getByText(/1 activity on 1 day\./)).toBeVisible();
   await expect(a.getByText(/1 confirmed of 1 due/)).toBeVisible();
   await expect(a.getByText('Screening range')).toBeVisible();
   await a.getByText('View as a table').first().click();

@@ -115,7 +115,7 @@ export function runPersona(p: Persona, o: RunOptions): RunResult {
       model = updateTrial(model, gid, level, correct);
       idx[gid] = index;
       lastRate[gid] = correct ? 1 : 0;
-      if (rounds % 20 === 0) {
+      if (rounds === 20 || rounds === 50 || rounds === 100) {
         const se = DOMAINS.reduce((s, d, i) => s + (model.mu[i]! - abilityOn(p, d, day)) ** 2, 0) / DOMAINS.length;
         errors.push({ rounds, rmse: Math.sqrt(se) });
       }

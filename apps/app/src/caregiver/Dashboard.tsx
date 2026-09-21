@@ -58,7 +58,9 @@ export function Dashboard({ core }: { core: AppCore }) {
 
       <section aria-labelledby="h-week" className="card">
         <h2 id="h-week" className="text-2xl font-bold">This week</h2>
-        <p className="tnum mt-2">{view.week.sessions} activities on {view.week.daysActive} days.</p>
+        <p className="tnum mt-2">
+          {view.week.sessions} {view.week.sessions === 1 ? 'activity' : 'activities'} on {view.week.daysActive} {view.week.daysActive === 1 ? 'day' : 'days'}.
+        </p>
         <p className="tnum">Medicine and drink reminders: {view.adh.taken} confirmed of {view.adh.scheduled} due. {view.adh.unconfirmed} not confirmed.</p>
       </section>
 

@@ -15,3 +15,8 @@ apps/app/android/local.properties
 test-results/
 playwright-report/
 .claude/
+apps/app/android/app/src/main/assets/public/
+apps/app/android/app/src/main/assets/capacitor.config.json
+apps/app/android/app/src/main/assets/capacitor.plugins.json
+apps/app/android/capacitor-cordova-android-plugins/
+lighthouse*.json

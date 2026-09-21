@@ -7,7 +7,8 @@
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",
     "build": "pnpm -r --if-present build",
-    "check:avoid": "node tools/checks/avoid-list.mjs"
+    "check:avoid": "node tools/checks/avoid-list.mjs",
+    "test:tools": "vitest run tools"
   },
   "devDependencies": {
     "@types/node": "22.20.4",

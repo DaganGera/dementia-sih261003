@@ -1,0 +1,41 @@
+{
+ "generated": "2026-09-21T18:17:55.700Z",
+ "fps": {
+  "desktop": 12,
+  "mobile": 12
+ },
+ "desktop": {
+  "count": 169,
+  "bytes": 10959132,
+  "first": "0001.webp",
+  "pad": 4,
+  "width": 1440
+ },
+ "mobile": {
+  "count": 169,
+  "bytes": 3263660,
+  "first": "0001.webp",
+  "pad": 4,
+  "width": 600,
+  "height": 800
+ },
+ "files": {
+  "posterDesktop": {
+   "path": "poster-1600.webp",
+   "bytes": 87428
+  },
+  "posterMobile": {
+   "path": "poster-600x800.webp",
+   "bytes": 22364
+  },
+  "idleDesktop": {
+   "path": "idle-1280.mp4",
+   "bytes": 1290001
+  },
+  "idleMobile": {
+   "path": "idle-600x800.mp4",
+   "bytes": 338447
+  }
+ },
+ "criticalPathMobileBytes": 360811
+}

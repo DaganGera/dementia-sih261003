@@ -1,0 +1,86 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+:root {
+  color-scheme: light;
+  /* One motion system: three durations, one easing, one stagger, one reveal. */
+  --dur-1: 200ms;
+  --dur-2: 500ms;
+  --dur-3: 800ms;
+  --ease: ease-out;
+  --stagger: 200ms;
+  --background: #ffffff;
+}
+
+@theme inline {
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-ink: #000000;
+  --color-muted: #6f6f6f;
+  --color-accent: #1b5e45;
+  --color-line: #d9dcdb;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: #000000;
+  font-family: var(--font-body);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+:where(a, button, summary):focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* fade-rise: 0.8 s, ease-out, 20 px. The delays are the spec's 0.2 s and 0.4 s. */
+@keyframes fade-rise {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-rise { animation: fade-rise var(--dur-3) var(--ease) both; }
+.animate-fade-rise-delay { animation: fade-rise var(--dur-3) var(--ease) var(--stagger) both; }
+.animate-fade-rise-delay-2 { animation: fade-rise var(--dur-3) var(--ease) calc(var(--stagger) * 2) both; }
+
+/* Scroll reveal uses the same primitive, applied once by an IntersectionObserver. */
+.reveal { opacity: 0; transform: translateY(20px); }
+.reveal.is-visible { animation: fade-rise var(--dur-3) var(--ease) both; animation-delay: calc(var(--i, 0) * var(--stagger)); }
+.no-js .reveal { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-rise, .animate-fade-rise-delay, .animate-fade-rise-delay-2 { animation: none; }
+  .reveal, .reveal.is-visible { opacity: 1; transform: none; animation: none; }
+}
+
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* Spec: -2.46px at the 96px size (md and up). Below that, about -0.0256em so 320px screens do not crowd. */
+.hero-title { letter-spacing: -0.0256em; }
+@media (min-width: 768px) {
+  .hero-title { letter-spacing: -2.46px; }
+}
+
+/* Static fallback: light CSS-only parallax on the poster, removed for reduced motion. */
+@keyframes drift { to { transform: translateY(-32px) scale(1.04); } }
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax { animation: drift linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+  }
+}
+
+.skip-link {
+  position: absolute; left: 16px; top: -64px; z-index: 60;
+  background: #000; color: #fff; padding: 12px 16px; border-radius: 999px;
+}
+.skip-link:focus { top: 16px; }
