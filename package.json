@@ -1,0 +1,19 @@
+{
+  "name": "hillpath",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.5.1",
+  "scripts": {
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "build": "pnpm -r --if-present build",
+    "check:avoid": "node tools/checks/avoid-list.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.4",
+    "fast-check": "4.10.2",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "vitest": "5.0.1"
+  }
+}

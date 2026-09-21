@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+assets-src/
+ml/data/
+ml/.venv/
+__pycache__/
+*.log
+.turbo/
+apps/app/android/app/build/
+apps/app/android/.gradle/
+apps/app/android/local.properties
+test-results/
+playwright-report/
+.claude/
