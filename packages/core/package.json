@@ -10,6 +10,7 @@
     "@noble/ciphers": "2.4.0",
     "@noble/curves": "2.4.0",
     "@noble/hashes": "2.4.0",
-    "cbor-x": "1.6.6"
+    "cbor-x": "1.6.6",
+    "zod": "4.6.5"
   }
 }

@@ -1,0 +1,130 @@
+import type { GameId } from '@hillpath/contracts';
+import { hydrationPrompt, occurrences, statusAt, unconfirmedMessageForPatient, confirmDose, type ReminderRule } from '@hillpath/core';
+import { GAMES } from '@hillpath/ml';
+import { CalendarCheck, HandWaving, Play } from '@phosphor-icons/react';
+import { useEffect, useMemo, useState } from 'react';
+import type { AppCore } from '../lib/core';
+import { getSettings, listEvents, listFaces, listReminders, listSessions, raiseAlert, writeEvent } from '../lib/care';
+import { go } from '../lib/router';
+import { say } from '../lib/voice';
+import { useVersion } from '../lib/state';
+import { BigButton, PatientScreen, StateNote } from '../ui/kit';
+
+const ORDER: GameId[] = ['G1', 'G2', 'G3', 'G4', 'G7'];
+
+/** The game least recently played, skipping Faces and Names until a family member has been added. */
+export function nextGame(core: AppCore): GameId {
+  const hasFaces = listFaces(core).length >= 2;
+  const last = new Map<GameId, number>();
+  for (const s of listSessions(core)) if (!last.has(s.game_id)) last.set(s.game_id, s.started_at);
+  const candidates = ORDER.filter((g) => g !== 'G2' || hasFaces);
+  return [...candidates].sort((a, b) => (last.get(a) ?? 0) - (last.get(b) ?? 0))[0]!;
+}
+
+export function PatientHome({ core }: { core: AppCore }) {
+  const v = useVersion();
+  const settings = getSettings(core);
+  const game = useMemo(() => nextGame(core), [core, v]);
+  const due = useDueReminders(core);
+  const [active, setActive] = useState<Due | null>(null);
+  const [helpSent, setHelpSent] = useState(false);
+  const name = settings?.patient_name || 'friend';
+
+  useEffect(() => {
+    if (due && !active) setActive(due);
+  }, [due, active]);
+
+  useEffect(() => {
+    void say(core, 'greeting', `Hello ${name}. It is good to see you. Would you like to play a little?`);
+  }, [core, name]);
+
+  if (active) return <DueScreen core={core} rule={active.rule} scheduledFor={active.at} carer={settings?.carer_name ?? 'Your family'} onClose={() => setActive(null)} />;
+
+  return (
+    <PatientScreen title={`Hello, ${name}`} onHear={() => void say(core, 'greeting', `Hello ${name}. Would you like to play a little?`)}>
+      <BigButton primary onClick={() => go('patient', 'play', game)} className="w-full py-6">
+        <Play size={36} weight="fill" aria-hidden />
+        Play: {GAMES[game].title}
+      </BigButton>
+      <BigButton onClick={() => go('patient', 'day')} className="w-full">
+        <CalendarCheck size={32} aria-hidden />
+        My day
+      </BigButton>
+      <BigButton
+        onClick={() => {
+          raiseAlert(core, 'urgent', 'help', `${name} asked for help.`);
+          setHelpSent(true);
+          void say(core, 'help-sent', 'I have told your family. They will come soon.');
+        }}
+        className="btn-quiet mt-8 w-full"
+      >
+        <HandWaving size={32} aria-hidden />
+        I need help
+      </BigButton>
+      {helpSent && <StateNote kind="loading" title="I have told your family." body="They will come soon." />}
+    </PatientScreen>
+  );
+}
+
+interface Due {
+  rule: ReminderRule;
+  at: number;
+}
+
+/** The reminder whose window is open now and not yet confirmed. Checked every 20 seconds while the app is open. */
+export function useDueReminders(core: AppCore): Due | null {
+  const [now, setNow] = useState(Date.now());
+  const v = useVersion();
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(Date.now()), 20_000);
+    return () => window.clearInterval(t);
+  }, []);
+  return useMemo(() => {
+    const events = listEvents(core);
+    for (const rule of listReminders(core)) {
+      for (const at of occurrences(rule, now - rule.window_min * 60_000, now)) {
+        const ev = events.find((e) => e.reminder_id === rule.id && e.scheduled_for === at);
+        if (statusAt(rule, at, ev, now) === 'due') return { rule, at };
+      }
+    }
+    return null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [core, now, v]);
+}
+
+function DueScreen({ core, rule, scheduledFor, carer, onClose }: { core: AppCore; rule: ReminderRule; scheduledFor: number; carer: string; onClose: () => void }) {
+  const [message, setMessage] = useState<string | null>(null);
+  const line = rule.kind === 'hydration' ? hydrationPrompt(rule) : rule.kind === 'medicine' ? `It is time for your medicine: ${rule.title}.` : `It is time: ${rule.title}.`;
+  useEffect(() => {
+    void say(core, `reminder-${rule.kind === 'medicine' ? 'medicine' : rule.kind === 'hydration' ? 'water' : 'activity'}`, line);
+  }, [core, rule, line]);
+
+  const confirm = () => {
+    const existing = listEvents(core).find((e) => e.reminder_id === rule.id && e.scheduled_for === scheduledFor);
+    const r = confirmDose(existing, rule, scheduledFor, Date.now());
+    if (r.event) writeEvent(core, r.event);
+    setMessage(r.message);
+  };
+  const notSure = () => {
+    raiseAlert(core, 'attention', `unsure-${rule.kind}`, `${rule.title}: the person was not sure if it was done. Please check with them.`);
+    writeEvent(core, { reminder_id: rule.id, scheduled_for: scheduledFor, status: 'skipped', confirmed_at: Date.now() });
+    setMessage(unconfirmedMessageForPatient(rule.kind, carer));
+  };
+
+  return (
+    <PatientScreen title={rule.title} onHear={() => void say(core, `reminder-${rule.kind}`, line)}>
+      <p className="card">{line}</p>
+      {message ? (
+        <>
+          <p className="card" role="status">{message}</p>
+          <BigButton primary onClick={onClose} className="w-full">Back to home</BigButton>
+        </>
+      ) : (
+        <>
+          <BigButton primary onClick={confirm} className="w-full py-6">Yes, done</BigButton>
+          <BigButton onClick={notSure} className="btn-quiet w-full">I am not sure</BigButton>
+        </>
+      )}
+    </PatientScreen>
+  );
+}

@@ -48,7 +48,10 @@ export function openEnvelope(i: OpenInput): { ops: Op[]; vector: Record<string, 
   if (!Array.isArray(raw)) throw new EnvelopeError('Payload is not a list of ops');
   const ops = raw.map((o) => {
     const r = Op.safeParse(o);
-    if (!r.success) throw new EnvelopeError('An op is not valid');
+    if (!r.success) {
+      const issue = r.error.issues[0];
+      throw new EnvelopeError(`A record is not valid (${issue?.path.join('.') || 'shape'}: ${issue?.message ?? 'unknown'})`);
+    }
     return r.data;
   });
   return { ops, vector: e.vector, from: e.from };

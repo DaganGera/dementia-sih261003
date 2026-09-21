@@ -59,7 +59,7 @@ export function abilityOn(p: Persona, domain: Domain, day: number): number {
   if (p.scenario === 'S4_depression') theta -= 0.3;
   if (p.scenario === 'S5_delirium' && day >= p.episodeStart && day < p.episodeStart + p.episodeLength) {
     const into = day - p.episodeStart;
-    const depth = 2.2 * Math.max(0, 1 - Math.max(0, into - 2) / p.episodeLength);
+    const depth = 2.8 * Math.max(0, 1 - Math.max(0, into - 2) / p.episodeLength);
     theta -= depth;
   }
   if (p.scenario === 'S6_hearing' && (domain === 'verbal_memory' || domain === 'associative_memory')) theta -= 0.6;

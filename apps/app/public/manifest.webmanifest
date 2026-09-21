@@ -1,0 +1,10 @@
+{
+  "name": "Hillpath",
+  "short_name": "Hillpath",
+  "description": "Memory activities and reminders for people living with dementia, and a view for their family.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "icons": [{ "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

@@ -2,7 +2,7 @@ import type { GameId } from '@hillpath/contracts';
 import { describe, expect, it } from 'vitest';
 import { GAMES } from './games';
 import { rng } from './linalg';
-import { abilitySummary, advanceDays, chooseLevel, finishSession, initialModel, successProbability, updateTrial } from './m1';
+import { abilitySummary, advanceDays, chooseLevel, finishSession, initialModel, isFiniteModel, successProbability, updateTrial } from './m1';
 
 describe('M1 ability model', () => {
   it('moves the mean up after successes and down after failures, and shrinks uncertainty', () => {
@@ -73,6 +73,16 @@ describe('M1 ability model', () => {
     expect(c.index).toBeLessThanOrEqual(1);
     expect(c.reason).toMatch(/successes in 10/);
     expect(c.reason).not.toMatch(/[–—]/);
+  });
+
+  it('ignores trials that cannot be failed and never produces NaN', () => {
+    const m = initialModel();
+    const same = updateTrial(m, 'G1', { b: 0, chance: 1 }, true);
+    expect(same.mu).toEqual(m.mu);
+    expect(same.cov).toEqual(m.cov);
+    let x = m;
+    for (const chance of [0.98, 0.5, 0.05, 0.9]) for (const ok of [true, false]) x = updateTrial(x, 'G1', { b: 3, chance }, ok);
+    expect(isFiniteModel(x)).toBe(true);
   });
 
   it('gives success probabilities between chance and 1', () => {

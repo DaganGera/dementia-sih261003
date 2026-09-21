@@ -5,6 +5,7 @@ export * from './consent';
 export * from './crypto';
 export * from './envelope';
 export * from './hlc';
+export * from './pairing';
 export * from './paging';
 export * from './reminders';
 export * from './replica';

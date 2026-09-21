@@ -44,6 +44,8 @@ export function advanceDays(m: AbilityModel, days: number): AbilityModel {
  * so the update is a scalar Fisher-scoring solve followed by a conditional-Gaussian update of the rest.
  */
 export function updateTrial(m: AbilityModel, gameId: GameId, level: Pick<Level, 'b' | 'chance'>, correct: boolean): AbilityModel {
+  // A trial that cannot be failed (chance of 1, such as the last pair on a board) carries no information.
+  if (level.chance >= 0.99) return { ...m, rounds: m.rounds + 1 };
   const g = GAMES[gameId];
   const d = dIndex(g.domain);
   const practice = practiceGain(m.exposures[gameId] ?? 0);
@@ -70,6 +72,10 @@ export function updateTrial(m: AbilityModel, gameId: GameId, level: Pick<Level, 
   const k = (v - s2) / (s2 * s2);
   const cov = m.cov.map((r, i) => r.map((x, j) => x + col[i]! * col[j]! * k));
   return { ...m, mu, cov, rounds: m.rounds + 1 };
+}
+
+export function isFiniteModel(m: AbilityModel): boolean {
+  return m.mu.every(Number.isFinite) && m.cov.every((r, i) => r.every(Number.isFinite) && r[i]! > 0);
 }
 
 export function finishSession(m: AbilityModel, gameId: GameId): AbilityModel {

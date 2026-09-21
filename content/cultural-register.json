@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "policy": "Every cultural asset needs a source or a community-review flag before it ships. This build ships none.",
+  "shipped_cultural_assets": [],
+  "neutral_assets": [
+    {
+      "id": "phosphor-icons",
+      "what": "Household and nature icons used in the games",
+      "source": "https://phosphoricons.com",
+      "licence": "MIT",
+      "cultural_claim": "none"
+    },
+    {
+      "id": "stories-original",
+      "what": "Three short stories in apps/app/src/content/stories.ts",
+      "source": "Written for this project",
+      "licence": "Project licence",
+      "cultural_claim": "none; names are common across India and no festival or custom is described"
+    }
+  ],
+  "planned_needs_review": [
+    "Textile motifs for Pattern Weave (gamosa, phanek, puanchei, Naga shawl bands)",
+    "Festival calendar for the orientation board",
+    "Regional instruments and songs for Sound Match and Song Circle"
+  ]
+}

@@ -26,6 +26,20 @@ export function toHex(bytes: Uint8Array): string {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+async function pipe(bytes: Uint8Array, stream: CompressionStream | DecompressionStream): Promise<Uint8Array> {
+  const out = new Response(new Blob([bytes as BlobPart]).stream().pipeThrough(stream));
+  return new Uint8Array(await out.arrayBuffer());
+}
+
+/** gzip then base64url, so QR pages carry about a quarter of the raw JSON size. */
+export async function gzipToB64(text: string): Promise<string> {
+  return toB64(await pipe(utf8(text), new CompressionStream('gzip')));
+}
+
+export async function gunzipFromB64(b64: string): Promise<string> {
+  return new TextDecoder().decode(await pipe(fromB64(b64), new DecompressionStream('gzip')));
+}
+
 /** JSON with sorted keys so hashes and signatures are stable. */
 export function canonicalJson(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;

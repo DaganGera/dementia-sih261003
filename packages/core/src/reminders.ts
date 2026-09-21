@@ -13,6 +13,8 @@ export interface ReminderRule {
   /** Hydration only: true turns "drink more" into "small sips". */
   fluid_restriction: boolean;
   active: boolean;
+  /** When the caregiver created it. Earlier days are never counted as missed. */
+  created_at?: number;
 }
 
 export interface ReminderEvent {
@@ -31,6 +33,8 @@ export function eventKey(reminderId: string, scheduledFor: number): string {
 /** Scheduled instants (ms) for a rule between two instants, in the device's local time. */
 export function occurrences(rule: ReminderRule, fromMs: number, toMs: number): number[] {
   if (!rule.active) return [];
+  // A reminder cannot have been missed before it existed.
+  fromMs = Math.max(fromMs, rule.created_at ?? 0);
   const [h, m] = rule.time.split(':').map(Number) as [number, number];
   const out: number[] = [];
   const day = new Date(fromMs);

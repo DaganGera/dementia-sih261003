@@ -1,5 +1,5 @@
-import { DOMAINS, type GameId, type Trial } from '@hillpath/contracts';
-import { chooseLevel, finishSession, GAMES, initialModel, normal, rng, successProbability, thresholdNext, updateTrial, type AbilityModel } from '@hillpath/ml';
+import { DOMAINS, type Domain, type GameId, type Trial } from '@hillpath/contracts';
+import { chooseLevel, composite, finishSession, GAMES, initialModel, normal, practiceGain, rng, successProbability, thresholdNext, updateTrial, type AbilityModel } from '@hillpath/ml';
 import { abilityOn, playsOn, type Persona } from './persona';
 
 export type ResponseFamily = 'logistic' | 'probit';
@@ -18,6 +18,10 @@ export interface DayLog {
   successes: number;
   inBand: number;
   trials: Trial[];
+  /** Composite ability estimate after the day's session, when one was played. */
+  composite?: { mean: number; sd: number };
+  /** Mean of (correct minus expected) for the day's session, keyed by domain. */
+  excess?: Partial<Record<Domain, number>>;
 }
 
 export interface RunOptions {
@@ -64,6 +68,7 @@ export function runPersona(p: Persona, o: RunOptions): RunResult {
     const sessionId = `${p.id}-d${day}`;
     let streak = 0;
     let sessionSuccesses = 0;
+    let excessSum = 0;
     // The old engine changes level once per session, from that game's previous session accuracy.
     const sessionIndex =
       sessionAcc[gid] === undefined
@@ -106,6 +111,7 @@ export function runPersona(p: Persona, o: RunOptions): RunResult {
         input_mode: 'tap',
         synthetic: true,
       });
+      excessSum += (correct ? 1 : 0) - successProbability(model.mu[DOMAINS.indexOf(domain)]!, level, game.a, practiceGain(model.exposures[gid] ?? 0));
       model = updateTrial(model, gid, level, correct);
       idx[gid] = index;
       lastRate[gid] = correct ? 1 : 0;
@@ -115,6 +121,8 @@ export function runPersona(p: Persona, o: RunOptions): RunResult {
       }
     }
     model = finishSession(model, gid);
+    log.composite = composite(model);
+    log.excess = { [domain]: excessSum / ROUNDS_PER_SESSION };
     sessionAcc[gid] = sessionSuccesses / ROUNDS_PER_SESSION;
     sessions += 1;
   }

@@ -201,15 +201,38 @@ const sd = (a: number[]) => {
  * A drop of more than 2 personal standard deviations in the last 3 days against the previous 3 weeks,
  * in 2 or more domains, or a caregiver report of sudden confusion, drowsiness or agitation.
  */
-export function abruptChange(series: Partial<Record<Domain, DayValue[]>>, today: number, acute: AcuteChecklist = {}): AbruptResult {
+export function abruptChange(
+  series: Partial<Record<Domain, DayValue[]>>,
+  today: number,
+  acute: AcuteChecklist = {},
+  options: { minBase?: number; recentDays?: number; baseDays?: number; pooled?: { z?: number } } = {},
+): AbruptResult {
   const reasons: string[] = [];
   const domains: Domain[] = [];
-  for (const d of DOMAINS) {
+  const minBase = options.minBase ?? 8;
+  const recentDays = options.recentDays ?? 3;
+  const baseDays = options.baseDays ?? 24;
+  if (options.pooled) {
+    // Sparse play: pool every area, compare the last week with the weeks before it, and need at least two areas in the last week.
+    const all: Array<{ day: number; value: number; d: Domain }> = [];
+    for (const d of DOMAINS) for (const x of series[d] ?? []) all.push({ ...x, d });
+    const base = all.filter((x) => x.day >= today - baseDays && x.day < today - recentDays).map((x) => x.value);
+    const recent = all.filter((x) => x.day > today - recentDays && x.day <= today);
+    if (base.length >= minBase && recent.length >= 2) {
+      const m0 = mean(base);
+      const m1 = mean(recent.map((x) => x.value));
+      const s0 = Math.max(sd(base), 0.15);
+      const z = (m0 - m1) / (s0 * Math.sqrt(1 / recent.length + 1 / base.length));
+      const seen = new Set(recent.map((x) => x.d));
+      if (z > (options.pooled.z ?? 3) && m0 - m1 >= 0.2 && seen.size >= 2) domains.push(...seen);
+    }
+  }
+  for (const d of options.pooled ? [] : DOMAINS) {
     const s = series[d];
     if (!s) continue;
-    const base = s.filter((x) => x.day >= today - 24 && x.day < today - 3).map((x) => x.value);
-    const recent = s.filter((x) => x.day > today - 3 && x.day <= today).map((x) => x.value);
-    if (base.length < 8 || recent.length < 1) continue;
+    const base = s.filter((x) => x.day >= today - baseDays && x.day < today - recentDays).map((x) => x.value);
+    const recent = s.filter((x) => x.day > today - recentDays && x.day <= today).map((x) => x.value);
+    if (base.length < minBase || recent.length < 1) continue;
     const personalSd = Math.max(sd(base), 0.15);
     if (mean(base) - mean(recent) > 2 * personalSd) domains.push(d);
   }
