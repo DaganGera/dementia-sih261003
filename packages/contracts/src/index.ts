@@ -5,13 +5,18 @@ export const CONTRACTS_VERSION = '0.1.0';
 export const Maturity = z.enum(['Implemented', 'Simulated', 'Roadmap']);
 export type Maturity = z.infer<typeof Maturity>;
 
-export const DOMAINS = ['visual_memory', 'associative_memory', 'verbal_memory', 'procedural', 'attention'] as const;
+export const DOMAINS = ['visual_memory', 'associative_memory', 'verbal_memory', 'procedural', 'attention', 'recognition'] as const;
 export const Domain = z.enum(DOMAINS);
 export type Domain = z.infer<typeof Domain>;
 
-export const GAME_IDS = ['G1', 'G2', 'G3', 'G4', 'G7'] as const;
+/** Scored games feed the ability model. G9 and G10 are unscored: they log engagement only. */
+export const SCORED_GAME_IDS = ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'G8'] as const;
+export const UNSCORED_GAME_IDS = ['G9', 'G10'] as const;
+export const GAME_IDS = [...SCORED_GAME_IDS, ...UNSCORED_GAME_IDS] as const;
 export const GameId = z.enum(GAME_IDS);
 export type GameId = z.infer<typeof GameId>;
+export type ScoredGameId = (typeof SCORED_GAME_IDS)[number];
+export const isScored = (g: string): g is ScoredGameId => (SCORED_GAME_IDS as readonly string[]).includes(g);
 
 export const Role = z.enum(['patient', 'caregiver', 'health_worker', 'clinician']);
 export type Role = z.infer<typeof Role>;
@@ -29,6 +34,9 @@ export const Trial = z.object({
   hint_used: z.boolean(),
   input_mode: z.enum(['tap', 'voice', 'both']),
   synthetic: z.boolean(),
+  /** Voice answers only: time from the end of the prompt to the start of speech, and the share of the answer that was pause. */
+  speech_latency_ms: z.number().nonnegative().optional(),
+  pause_ratio: z.number().min(0).max(1).optional(),
 });
 export type Trial = z.infer<typeof Trial>;
 

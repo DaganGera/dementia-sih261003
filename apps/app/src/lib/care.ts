@@ -1,3 +1,4 @@
+import { deserialise, serialise, type EnrolledWord, type StoredTemplate } from '@hillpath/audio';
 import type { GameId, Trial } from '@hillpath/contracts';
 import { eventKey, type ReminderEvent, type ReminderRule } from '@hillpath/core';
 import { initialModel, isFiniteModel, type AbilityModel } from '@hillpath/ml';
@@ -10,6 +11,8 @@ export interface CircleSettings {
   schooling: number;
   age: number;
   bridge_language: string;
+  /** Number for the urgent text message. Optional. */
+  escalation_phone: string;
 }
 
 const MAIN = 'main';
@@ -24,6 +27,7 @@ export function getSettings(core: AppCore): CircleSettings | null {
     schooling: Number(r.schooling ?? 5),
     age: Number(r.age ?? 75),
     bridge_language: 'English',
+    escalation_phone: String(r.escalation_phone ?? ''),
   };
 }
 
@@ -62,7 +66,7 @@ export function writeSession(
   patientId: string,
   started: number,
   ended: number | null,
-  extra: { excess?: number; domain?: string } = {},
+  extra: { excess?: number; domain?: string; items?: number; seconds?: number } = {},
 ): void {
   const exists = core.replica.get('session', id);
   const fields = { patient_id: patientId, game_id: gameId, started_at: started, ended_at: ended, device_id: core.deviceId, synthetic: false, ...extra };
@@ -166,6 +170,109 @@ export function saveFace(core: AppCore, f: Face): void {
   const exists = core.replica.get('face', f.id);
   const { id, ...fields } = f;
   (exists ? core.replica.set : core.replica.insert).call(core.replica, 'face', id, fields);
+}
+
+export interface Place {
+  id: string;
+  name: string;
+  thumb?: string;
+}
+
+export function listPlaces(core: AppCore): Place[] {
+  return core.replica.list('place').map((r) => ({ id: r.id, name: String(r.name), thumb: typeof r.thumb === 'string' ? r.thumb : undefined }));
+}
+
+export function savePlace(core: AppCore, p: Place): void {
+  const exists = core.replica.get('place', p.id);
+  const { id, ...fields } = p;
+  (exists ? core.replica.set : core.replica.insert).call(core.replica, 'place', id, fields);
+}
+
+/** A fact the family has approved. Life Story only ever shows these, never generated text. */
+export interface Fact {
+  id: string;
+  person: string;
+  relation: string;
+  place: string;
+  year: string;
+  text: string;
+  do_not_ask: boolean;
+  thumb?: string;
+}
+
+export function listFacts(core: AppCore): Fact[] {
+  return core.replica.list('fact').map((r) => ({
+    id: r.id,
+    person: String(r.person ?? ''),
+    relation: String(r.relation ?? ''),
+    place: String(r.place ?? ''),
+    year: String(r.year ?? ''),
+    text: String(r.text ?? ''),
+    do_not_ask: Boolean(r.do_not_ask),
+    thumb: typeof r.thumb === 'string' ? r.thumb : undefined,
+  }));
+}
+
+export function saveFact(core: AppCore, f: Fact): void {
+  const exists = core.replica.get('fact', f.id);
+  const { id, ...fields } = f;
+  (exists ? core.replica.set : core.replica.insert).call(core.replica, 'fact', id, fields);
+}
+
+export function deleteFact(core: AppCore, id: string): void {
+  core.replica.remove('fact', id);
+}
+
+export interface Song {
+  id: string;
+  title: string;
+  lyrics: string;
+  /** Media id in the device's encrypted store. Family songs stay on the device where they were added. */
+  media: string;
+}
+
+export function listSongs(core: AppCore): Song[] {
+  return core.replica.list('song').map((r) => ({ id: r.id, title: String(r.title ?? ''), lyrics: String(r.lyrics ?? ''), media: String(r.media ?? '') }));
+}
+
+export function saveSong(core: AppCore, s: Song): void {
+  const { id, ...fields } = s;
+  core.replica.insert('song', id, fields);
+}
+
+export const wordId = (kind: 'face' | 'place', id: string) => `${kind}:${id}`;
+
+/** Enrolled spoken words (personal keyword spotting). Templates are small and sync with the other records. */
+export function listWords(core: AppCore): EnrolledWord[] {
+  return core.replica.list('kws').map((r) => deserialise({ id: String(r.id), spread: Number(r.spread ?? 1), templates: (r.templates as StoredTemplate[]) ?? [] }));
+}
+
+export function saveWord(core: AppCore, w: EnrolledWord): void {
+  const s = serialise(w);
+  const exists = core.replica.get('kws', w.id);
+  const fields = { spread: s.spread, templates: s.templates as unknown };
+  (exists ? core.replica.set : core.replica.insert).call(core.replica, 'kws', w.id, fields);
+}
+
+export interface SpeechTiming {
+  id: string;
+  at: number;
+  context: string;
+  latency_ms: number;
+  speech_ms: number;
+  pause_ratio: number;
+}
+
+/** Only timing numbers are stored. The audio is never kept. */
+export function saveTiming(core: AppCore, t: Omit<SpeechTiming, 'id'>): void {
+  core.replica.insert('speech_timing', `st-${t.at.toString(36)}`, { ...t });
+}
+
+export function listTimings(core: AppCore): SpeechTiming[] {
+  return core.replica
+    .list('speech_timing')
+    .map((r) => ({ id: r.id, at: Number(r.at), context: String(r.context), latency_ms: Number(r.latency_ms), speech_ms: Number(r.speech_ms), pause_ratio: Number(r.pause_ratio) }))
+    .sort((a, b) => b.at - a.at);
 }
 
 export async function thumbFromFile(file: File, size = 96): Promise<string> {

@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { STORIES, type StoryQuestion } from '../../content/stories';
 import { BigButton } from '../../ui/kit';
+import { TimingCapture } from '../../ui/TimingCapture';
 import type { RoundProps, TrialResult } from './engine';
 
 type Phase = 'read' | 'rest' | 'ask';
 const REST_SECONDS = [0, 6, 12];
 
 /** Read or hear a short story, optionally rest, then answer questions. A miss shows the sentence again, never a cross. */
-export function G3Story({ level, onDone, speak }: RoundProps) {
+export function G3Story({ core, level, onDone, speak }: RoundProps) {
   const { sentences = 3, options = 3, delay = 0 } = level.design;
   const story = useMemo(() => STORIES[Math.floor(Math.random() * STORIES.length)]!, []);
   const lines = useMemo(() => story.sentences.slice(0, sentences), [story, sentences]);
@@ -44,6 +45,7 @@ export function G3Story({ level, onDone, speak }: RoundProps) {
         <p className="card leading-relaxed">{lines.join(' ')}</p>
         <div className="mt-4 flex flex-col gap-3">
           <BigButton onClick={() => speak(`${story.title}. ${lines.join(' ')}`)}>Hear the story again</BigButton>
+          <TimingCapture core={core} context="story" label="Tell the story in your own words" />
           <BigButton primary onClick={() => setPhase(delay > 0 ? 'rest' : 'ask')}>I am ready for the questions</BigButton>
         </div>
       </section>

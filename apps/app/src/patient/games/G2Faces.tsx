@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { listFaces, type Face } from '../../lib/care';
+import { listFaces, listWords, wordId, type Face } from '../../lib/care';
+import { VoiceAnswer } from '../../ui/VoiceAnswer';
 import type { RoundProps } from './engine';
 
 export function Avatar({ face, size = 160 }: { face: Face; size?: number }) {
@@ -31,14 +32,16 @@ export function G2Faces({ core, level, onDone, speak }: RoundProps) {
     speak('Who is this?');
   }, [speak]);
 
-  const pick = (f: Face) => {
+  const pick = (f: Face, voice?: { latencyMs: number; pauseRatio: number }) => {
     if (done.current) return;
     done.current = true;
     setPicked(f.id);
     const correct = f.id === person.id;
     speak(`This is ${person.name}${person.relation ? `, your ${person.relation}` : ''}.`);
-    window.setTimeout(() => onDone([{ correct, rt_ms: Date.now() - started.current, hint_used: cue >= 2, chance: 1 / choices.length }]), 2200);
+    window.setTimeout(() => onDone([{ correct, rt_ms: Date.now() - started.current, hint_used: cue >= 2, chance: 1 / choices.length, ...(voice ? { voice } : {}) }]), 2200);
   };
+  const words = useMemo(() => listWords(core).filter((w) => choices.some((c) => wordId('face', c.id) === w.id)), [core, choices]);
+  const labels = Object.fromEntries(choices.map((c) => [wordId('face', c.id), c.name]));
 
   const cueText = cue >= 2 ? `The name starts with ${person.name.slice(0, 1)}.` : cue === 1 && person.relation ? `This is someone in your family: your ${person.relation}.` : '';
   return (
@@ -66,6 +69,15 @@ export function G2Faces({ core, level, onDone, speak }: RoundProps) {
           );
         })}
       </ul>
+      <VoiceAnswer
+        words={words}
+        labels={labels}
+        disabled={picked !== null}
+        onAnswer={(r) => {
+          const f = choices.find((c) => wordId('face', c.id) === r.id);
+          if (f) pick(f, { latencyMs: r.latencyMs, pauseRatio: r.pauseRatio });
+        }}
+      />
       {picked && (
         <p className="mt-4 text-center text-xl" role="status">
           This is {person.name}{person.relation ? `, your ${person.relation}` : ''}.

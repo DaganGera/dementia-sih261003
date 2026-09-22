@@ -1,8 +1,8 @@
-import type { GameId } from '@hillpath/contracts';
-import { GAME_IDS } from '@hillpath/contracts';
+import { isScored, type ScoredGameId } from '@hillpath/contracts';
 import { useState } from 'react';
 import { Dashboard } from './caregiver/Dashboard';
 import { MonthlyCheck } from './caregiver/Check';
+import { ContentSetup } from './caregiver/Content';
 import { FamilySetup } from './caregiver/Family';
 import { PrivacyPanel } from './caregiver/Privacy';
 import { ReminderManager } from './caregiver/Reminders';
@@ -11,6 +11,7 @@ import { go, useRoute } from './lib/router';
 import { useCore, useVersion } from './lib/state';
 import { PatientDay } from './patient/Day';
 import { GameRunner } from './patient/games/engine';
+import { LifeStory, SongCircle } from './patient/games/Unscored';
 import { PatientHome } from './patient/Home';
 import { BigButton, PatientScreen } from './ui/kit';
 import { SyncPanel } from './ui/Sync';
@@ -43,7 +44,9 @@ function RoleChooser() {
 
 function PatientApp({ route, preview = false }: { route: string[]; preview?: boolean }) {
   const core = useCore();
-  if (route[1] === 'play' && GAME_IDS.includes(route[2] as GameId)) return <GameRunner key={route[2]} core={core} gameId={route[2] as GameId} />;
+  if (route[1] === 'play' && route[2] && isScored(route[2])) return <GameRunner key={route[2]} core={core} gameId={route[2] as ScoredGameId} />;
+  if (route[1] === 'play' && route[2] === 'G9') return <LifeStory core={core} />;
+  if (route[1] === 'play' && route[2] === 'G10') return <SongCircle core={core} />;
   if (route[1] === 'day') return <PatientDay core={core} />;
   if (route[1] === 'family') return <FamilyGate />;
   return (
@@ -99,7 +102,12 @@ function CaregiverApp({ route }: { route: string[] }) {
       <main>
         {tab === 'home' && <Dashboard core={core} />}
         {tab === 'reminders' && <ReminderManager core={core} />}
-        {tab === 'family' && <FamilySetup core={core} />}
+        {tab === 'family' && (
+          <div className="flex flex-col gap-8">
+            <FamilySetup core={core} />
+            <ContentSetup core={core} />
+          </div>
+        )}
         {tab === 'check' && <MonthlyCheck core={core} />}
         {tab === 'share' && <SyncPanel core={core} />}
         {tab === 'privacy' && <PrivacyPanel core={core} />}

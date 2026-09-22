@@ -4,25 +4,39 @@ import type { AppCore, Peer } from '../lib/core';
 import { useVersion } from '../lib/state';
 import { BigButton, StateNote } from './kit';
 import { QRScan, QRShow } from './qr';
+import { CourierPanel, LanPanel, RelayPanel } from './SyncMore';
 
-type Tab = 'send' | 'receive' | 'pair';
+type Tab = 'send' | 'receive' | 'pair' | 'nearby' | 'server' | 'courier';
+
+const TAB_LABELS: Record<Tab, string> = {
+  send: 'Send records',
+  receive: 'Receive records',
+  pair: 'Pair a device',
+  nearby: 'Nearby',
+  server: 'Backup server',
+  courier: 'Carry for others',
+};
 
 /** Share and pair without any network. Used on every device; the caregiver starts pairing, others answer. */
 export function SyncPanel({ core }: { core: AppCore }) {
   const [tab, setTab] = useState<Tab>('send');
   useVersion();
+  const tabs: Tab[] = ['send', 'receive', 'pair', 'nearby', 'server', ...(core.role === 'health_worker' ? (['courier'] as Tab[]) : [])];
   return (
     <section className="flex flex-col gap-4" aria-label="Share with another device">
       <div role="tablist" className="flex flex-wrap gap-2">
-        {(['send', 'receive', 'pair'] as Tab[]).map((t) => (
+        {tabs.map((t) => (
           <BigButton key={t} role="tab" aria-selected={tab === t} primary={tab === t} onClick={() => setTab(t)} className="text-lg">
-            {t === 'send' ? 'Send records' : t === 'receive' ? 'Receive records' : 'Pair a device'}
+            {TAB_LABELS[t]}
           </BigButton>
         ))}
       </div>
       {tab === 'send' && <Send core={core} />}
       {tab === 'receive' && <Receive core={core} />}
       {tab === 'pair' && <Pair core={core} />}
+      {tab === 'nearby' && <LanPanel core={core} />}
+      {tab === 'server' && <RelayPanel core={core} />}
+      {tab === 'courier' && <CourierPanel core={core} />}
     </section>
   );
 }

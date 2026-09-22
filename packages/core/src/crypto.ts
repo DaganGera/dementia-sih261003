@@ -30,6 +30,14 @@ export function bearerHash(bearer: string): string {
   return toHex(sha256(utf8(bearer)));
 }
 
+/**
+ * Write-only token for a courier. It rides with the envelopes it delivers, so a courier can hand ciphertext to the relay
+ * without holding the bearer that reads or erases the circle.
+ */
+export function relayDropToken(circleKey: Uint8Array): string {
+  return toHex(hkdf(sha256, circleKey, undefined, utf8('hillpath-relay-drop'), 32));
+}
+
 export interface WrappedKey {
   eph: string;
   nonce: string;

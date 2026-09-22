@@ -4,6 +4,7 @@ export * from './bytes';
 export * from './consent';
 export * from './crypto';
 export * from './envelope';
+export * from './fountain';
 export * from './hlc';
 export * from './pairing';
 export * from './paging';

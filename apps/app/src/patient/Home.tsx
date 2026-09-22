@@ -1,23 +1,25 @@
-import type { GameId } from '@hillpath/contracts';
+import type { ScoredGameId } from '@hillpath/contracts';
 import { hydrationPrompt, occurrences, statusAt, unconfirmedMessageForPatient, confirmDose, type ReminderRule } from '@hillpath/core';
 import { GAMES } from '@hillpath/ml';
-import { CalendarCheck, HandWaving, Play } from '@phosphor-icons/react';
+import { CalendarCheck, HandWaving, Images, MusicNotes, Play } from '@phosphor-icons/react';
 import { useEffect, useMemo, useState } from 'react';
 import type { AppCore } from '../lib/core';
-import { getSettings, listEvents, listFaces, listReminders, listSessions, raiseAlert, writeEvent } from '../lib/care';
+import { getSettings, listEvents, listFaces, listPlaces, listReminders, listSessions, raiseAlert, writeEvent } from '../lib/care';
 import { go } from '../lib/router';
+import { smsHref } from '../lib/sms';
 import { say } from '../lib/voice';
 import { useVersion } from '../lib/state';
 import { BigButton, PatientScreen, StateNote } from '../ui/kit';
 
-const ORDER: GameId[] = ['G1', 'G2', 'G3', 'G4', 'G7'];
+const ORDER: ScoredGameId[] = ['G1', 'G2', 'G3', 'G4', 'G7', 'G5', 'G6', 'G8'];
 
-/** The game least recently played, skipping Faces and Names until a family member has been added. */
-export function nextGame(core: AppCore): GameId {
+/** The game least recently played, skipping the ones that need family content until it has been added. */
+export function nextGame(core: AppCore): ScoredGameId {
   const hasFaces = listFaces(core).length >= 2;
-  const last = new Map<GameId, number>();
+  const hasPlaces = listPlaces(core).length >= 2;
+  const last = new Map<string, number>();
   for (const s of listSessions(core)) if (!last.has(s.game_id)) last.set(s.game_id, s.started_at);
-  const candidates = ORDER.filter((g) => g !== 'G2' || hasFaces);
+  const candidates = ORDER.filter((g) => (g !== 'G2' || hasFaces) && (g !== 'G8' || hasPlaces));
   return [...candidates].sort((a, b) => (last.get(a) ?? 0) - (last.get(b) ?? 0))[0]!;
 }
 
@@ -50,6 +52,16 @@ export function PatientHome({ core }: { core: AppCore }) {
         <CalendarCheck size={32} aria-hidden />
         My day
       </BigButton>
+      <div className="grid grid-cols-2 gap-4">
+        <BigButton onClick={() => go('patient', 'play', 'G9')} className="btn-quiet">
+          <Images size={32} aria-hidden />
+          Memories
+        </BigButton>
+        <BigButton onClick={() => go('patient', 'play', 'G10')} className="btn-quiet">
+          <MusicNotes size={32} aria-hidden />
+          Music
+        </BigButton>
+      </div>
       <BigButton
         onClick={() => {
           raiseAlert(core, 'urgent', 'help', `${name} asked for help.`);
@@ -61,7 +73,14 @@ export function PatientHome({ core }: { core: AppCore }) {
         <HandWaving size={32} aria-hidden />
         I need help
       </BigButton>
-      {helpSent && <StateNote kind="loading" title="I have told your family." body="They will come soon." />}
+      {helpSent && (
+        <StateNote
+          kind="loading"
+          title="I have told your family."
+          body="They will come soon."
+          action={settings?.escalation_phone ? <a className="btn" href={smsHref(settings.escalation_phone, name === 'friend' ? '' : name)}>Also send a text message</a> : undefined}
+        />
+      )}
     </PatientScreen>
   );
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bearerHash, comparisonCode, newCircleKey, newDeviceKeys, relayBearer, unwrapCircleKey, wrapCircleKey } from './crypto';
+import { bearerHash, comparisonCode, newCircleKey, newDeviceKeys, relayBearer, relayDropToken, unwrapCircleKey, wrapCircleKey } from './crypto';
 import { EnvelopeError, openEnvelope, sealEnvelope } from './envelope';
 import { PageAssembler, toPages } from './paging';
 import { Replica } from './replica';
@@ -45,6 +45,14 @@ describe('envelopes', () => {
     const b = relayBearer(newCircleKey());
     expect(b).toHaveLength(64);
     expect(bearerHash(b)).not.toBe(b);
+  });
+
+  it('derives a drop token that differs from the bearer and never equals its own hash', () => {
+    const k = newCircleKey();
+    expect(relayDropToken(k)).toHaveLength(64);
+    expect(relayDropToken(k)).not.toBe(relayBearer(k));
+    expect(bearerHash(relayDropToken(k))).not.toBe(relayDropToken(k));
+    expect(relayDropToken(k)).toBe(relayDropToken(k));
   });
 
   it('gives both devices the same four digit code', () => {

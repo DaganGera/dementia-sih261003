@@ -111,6 +111,7 @@ export function adherence(core: AppCore, days = 7): { scheduled: number; taken: 
 
 export function weekSummary(core: AppCore) {
   const week = listSessions(core).filter((s) => Date.now() - s.started_at < WEEK);
+  const scored = week.filter((s) => s.game_id !== 'G9' && s.game_id !== 'G10');
   const days = new Set(week.map((s) => new Date(s.started_at).toDateString()));
-  return { sessions: week.length, daysActive: days.size, synthetic: week.some((s) => s.synthetic) };
+  return { sessions: scored.length, unscored: week.length - scored.length, daysActive: days.size, synthetic: week.some((s) => s.synthetic) };
 }

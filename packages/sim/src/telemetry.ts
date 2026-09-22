@@ -1,4 +1,4 @@
-import { DOMAINS, type Domain, type GameId, type Trial } from '@hillpath/contracts';
+import { DOMAINS, type Domain, type ScoredGameId, type Trial } from '@hillpath/contracts';
 import { chooseLevel, composite, finishSession, GAMES, initialModel, normal, practiceGain, rng, successProbability, thresholdNext, updateTrial, type AbilityModel } from '@hillpath/ml';
 import { abilityOn, playsOn, type Persona } from './persona';
 
@@ -40,7 +40,7 @@ export interface RunResult {
   sessions: number;
 }
 
-const ORDER: GameId[] = ['G1', 'G2', 'G3', 'G4', 'G7'];
+const ORDER: ScoredGameId[] = ['G1', 'G2', 'G3', 'G4', 'G7', 'G5', 'G6', 'G8'];
 const ROUNDS_PER_SESSION = 5;
 
 /** Play a persona forward. Trials use the true ability; M1 never sees it. */
@@ -48,9 +48,9 @@ export function runPersona(p: Persona, o: RunOptions): RunResult {
   const r = rng(p.seed);
   const family = o.family ?? 'logistic';
   let model = initialModel();
-  const idx: Partial<Record<GameId, number>> = {};
-  const lastRate: Partial<Record<GameId, number>> = {};
-  const sessionAcc: Partial<Record<GameId, number>> = {};
+  const idx: Partial<Record<ScoredGameId, number>> = {};
+  const lastRate: Partial<Record<ScoredGameId, number>> = {};
+  const sessionAcc: Partial<Record<ScoredGameId, number>> = {};
   const days: DayLog[] = [];
   const errors: RunResult['errors'] = [];
   let frustration = 0;

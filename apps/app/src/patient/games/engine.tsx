@@ -1,4 +1,4 @@
-import { DOMAINS, type GameId } from '@hillpath/contracts';
+import { DOMAINS, type ScoredGameId } from '@hillpath/contracts';
 import { chooseLevel, composite, finishSession, GAMES, practiceGain, successProbability, updateTrial, type Level } from '@hillpath/ml';
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from 'react';
 import type { AppCore } from '../../lib/core';
@@ -10,13 +10,18 @@ import { G1Pairs } from './G1Pairs';
 import { G2Faces } from './G2Faces';
 import { G3Story } from './G3Story';
 import { G4Routine } from './G4Routine';
+import { G5Sounds } from './G5Sounds';
+import { G6Weave } from './G6Weave';
 import { G7Find } from './G7Find';
+import { G8Places } from './G8Places';
 
 export interface TrialResult {
   correct: boolean;
   rt_ms: number;
   hint_used: boolean;
   chance?: number;
+  /** Set when the answer was given by voice and confirmed. */
+  voice?: { latencyMs: number; pauseRatio: number };
 }
 
 export interface RoundProps {
@@ -28,12 +33,12 @@ export interface RoundProps {
   speak: (text: string) => void;
 }
 
-const ROUND_COMPONENTS: Record<GameId, ComponentType<RoundProps>> = { G1: G1Pairs, G2: G2Faces, G3: G3Story, G4: G4Routine, G7: G7Find };
-const ROUNDS: Record<GameId, number> = { G1: 2, G2: 5, G3: 2, G4: 2, G7: 5 };
+const ROUND_COMPONENTS: Record<ScoredGameId, ComponentType<RoundProps>> = { G1: G1Pairs, G2: G2Faces, G3: G3Story, G4: G4Routine, G5: G5Sounds, G6: G6Weave, G7: G7Find, G8: G8Places };
+const ROUNDS: Record<ScoredGameId, number> = { G1: 2, G2: 5, G3: 2, G4: 2, G5: 5, G6: 5, G7: 5, G8: 5 };
 export const SESSION_CAP_MS = 10 * 60_000;
 
 /** Runs one session: M1 picks each round's level, trials are written as ops, and the session ends by itself. */
-export function GameRunner({ core, gameId }: { core: AppCore; gameId: GameId }) {
+export function GameRunner({ core, gameId }: { core: AppCore; gameId: ScoredGameId }) {
   const spec = GAMES[gameId];
   const settings = getSettings(core);
   const patientId = settings?.patient_id ?? 'patient';
@@ -88,8 +93,9 @@ export function GameRunner({ core, gameId }: { core: AppCore; gameId: GameId }) 
         correct: t.correct,
         rt_ms: Math.round(t.rt_ms),
         hint_used: t.hint_used,
-        input_mode: 'tap',
+        input_mode: t.voice ? 'both' : 'tap',
         synthetic: false,
+        ...(t.voice ? { speech_latency_ms: Math.round(t.voice.latencyMs), pause_ratio: Math.max(0, Math.min(1, t.voice.pauseRatio)) } : {}),
       });
       const d = DOMAINS.indexOf(spec.domain);
       const expected = successProbability(model.current.mu[d]!, { b: choice.level.b, chance }, spec.a, practiceGain(model.current.exposures[gameId] ?? 0));

@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS circles (
   id TEXT PRIMARY KEY,
-  bearer_hash TEXT NOT NULL
+  bearer_hash TEXT NOT NULL,
+  drop_hash TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS envelopes (

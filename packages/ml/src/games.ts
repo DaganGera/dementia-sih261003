@@ -1,4 +1,4 @@
-import type { Domain, GameId } from '@hillpath/contracts';
+import type { Domain, ScoredGameId } from '@hillpath/contracts';
 
 /** Difficulty weights below are assumed values (Simulated). They are refit only when real trials exist. */
 export type Design = Record<string, number>;
@@ -14,7 +14,7 @@ export interface Level {
 }
 
 export interface GameSpec {
-  id: GameId;
+  id: ScoredGameId;
   title: string;
   domain: Domain;
   /** Slope of the response curve. */
@@ -28,7 +28,7 @@ interface Raw {
   label: string;
 }
 
-function build(id: GameId, title: string, domain: Domain, a: number, intercept: number, w: Design, raw: Raw[]): GameSpec {
+function build(id: ScoredGameId, title: string, domain: Domain, a: number, intercept: number, w: Design, raw: Raw[]): GameSpec {
   const levels = raw
     .map((r) => ({ ...r, b: intercept + Object.entries(w).reduce((s, [k, v]) => s + v * (r.design[k] ?? 0), 0) }))
     .sort((x, y) => x.b - y.b);
@@ -75,10 +75,37 @@ const g7 = [
   label: `${set_size} things to look through`,
 }));
 
-export const GAMES: Record<GameId, GameSpec> = {
+const g5 = [
+  [2, 0, 1], [2, 1, 1], [3, 0, 1], [3, 1, 0], [3, 2, 0], [4, 1, 0], [4, 2, 0],
+].map(([options, similarity, cue]) => ({
+  design: { options: options!, similarity: similarity!, cue: cue! },
+  chance: 1 / options!,
+  label: `${options} pictures to choose from`,
+}));
+
+const g6 = [
+  [3, 2, 2], [4, 2, 2], [4, 2, 3], [5, 3, 3], [5, 3, 4], [6, 3, 4], [6, 4, 4],
+].map(([length, motifs, options]) => ({
+  design: { length: length!, motifs: motifs!, options: options! },
+  chance: 1 / options!,
+  label: `a pattern of ${length} tiles`,
+}));
+
+const g8 = [
+  [2, 2], [2, 1], [3, 1], [3, 0], [4, 1], [4, 0],
+].map(([options, cue]) => ({
+  design: { options: options!, cue: cue! },
+  chance: 1 / options!,
+  label: `${options} places to choose from`,
+}));
+
+export const GAMES: Record<ScoredGameId, GameSpec> = {
   G1: build('G1', 'Pairs at Home', 'visual_memory', 1.2, -2.4, { pairs: 0.45, similarity: 0.5, preview_s: -0.15 }, g1),
   G2: build('G2', 'Faces and Names', 'associative_memory', 1.1, -1.2, { options: 0.5, cue: -0.5, interval: 0.25 }, g2),
   G3: build('G3', 'Story Time', 'verbal_memory', 1.0, -2.6, { sentences: 0.35, options: 0.35, delay: 0.3 }, g3),
   G4: build('G4', 'Routine Steps', 'procedural', 1.1, -1.4, { steps: 0.3, options: 0.4, hint: -0.5 }, g4),
+  G5: build('G5', 'Sound Match', 'recognition', 1.1, -1.6, { options: 0.5, similarity: 0.5, cue: -0.4 }, g5),
+  G6: build('G6', 'Pattern Weave', 'recognition', 1.1, -2.2, { length: 0.25, motifs: 0.5, options: 0.35 }, g6),
   G7: build('G7', 'Find It', 'attention', 1.2, -2.6, { set_size: 0.12, similarity: 0.5 }, g7),
+  G8: build('G8', 'Places I Know', 'recognition', 1.1, -1.8, { options: 0.5, cue: -0.5 }, g8),
 };

@@ -1,4 +1,4 @@
-import { DOMAINS, type Domain, type GameId } from '@hillpath/contracts';
+import { DOMAINS, type Domain, type ScoredGameId } from '@hillpath/contracts';
 import { GAMES, type Level } from './games';
 import { identity, normal, sigmoid, type Mat, type Vec } from './linalg';
 
@@ -10,7 +10,7 @@ export interface AbilityModel {
   mu: Vec;
   cov: Mat;
   /** Completed sessions per game, for the practice term. */
-  exposures: Partial<Record<GameId, number>>;
+  exposures: Partial<Record<ScoredGameId, number>>;
   rounds: number;
 }
 
@@ -43,7 +43,7 @@ export function advanceDays(m: AbilityModel, days: number): AbilityModel {
  * One assumed-density-filtering step for a single trial. The trial only depends on one domain,
  * so the update is a scalar Fisher-scoring solve followed by a conditional-Gaussian update of the rest.
  */
-export function updateTrial(m: AbilityModel, gameId: GameId, level: Pick<Level, 'b' | 'chance'>, correct: boolean): AbilityModel {
+export function updateTrial(m: AbilityModel, gameId: ScoredGameId, level: Pick<Level, 'b' | 'chance'>, correct: boolean): AbilityModel {
   // A trial that cannot be failed (chance of 1, such as the last pair on a board) carries no information.
   if (level.chance >= 0.99) return { ...m, rounds: m.rounds + 1 };
   const g = GAMES[gameId];
@@ -78,7 +78,7 @@ export function isFiniteModel(m: AbilityModel): boolean {
   return m.mu.every(Number.isFinite) && m.cov.every((r, i) => r.every(Number.isFinite) && r[i]! > 0);
 }
 
-export function finishSession(m: AbilityModel, gameId: GameId): AbilityModel {
+export function finishSession(m: AbilityModel, gameId: ScoredGameId): AbilityModel {
   return { ...m, exposures: { ...m.exposures, [gameId]: (m.exposures[gameId] ?? 0) + 1 } };
 }
 
@@ -95,7 +95,7 @@ export interface Choice {
 
 export interface ChooseInput {
   model: AbilityModel;
-  gameId: GameId;
+  gameId: ScoredGameId;
   lastIndex: number | null;
   /** Success rate of the previous round, if there was one. */
   lastRoundRate: number | null;

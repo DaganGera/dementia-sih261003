@@ -6,6 +6,7 @@ const DOMAIN_NAMES: Record<string, string> = {
   verbal_memory: 'Remembering stories',
   procedural: 'Everyday routines',
   attention: 'Attention',
+  recognition: 'Recognising pictures, sounds and places',
 };
 export const domainName = (d: string) => DOMAIN_NAMES[d] ?? d;
 
@@ -23,7 +24,7 @@ export function AbilityBands({ rows, unit = 'ability units' }: { rows: Band[]; u
   const x = (v: number) => ((Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo)) * 100;
   return (
     <div>
-      <svg role="img" aria-label="Ability in each area with a 90 percent range" viewBox="0 0 100 60" className="w-full" preserveAspectRatio="none" style={{ height: 240 }}>
+      <svg role="img" aria-label="Ability in each area with a 90 percent range" viewBox={`0 0 100 ${rows.length * 12}`} className="w-full" preserveAspectRatio="none" style={{ height: rows.length * 40 }}>
         {rows.map((r, i) => (
           <g key={r.domain} transform={`translate(0, ${i * 12 + 4})`}>
             <line x1={x(r.low)} x2={x(r.high)} y1={4} y2={4} stroke="var(--c-ink)" strokeWidth={0.8} />
@@ -32,7 +33,7 @@ export function AbilityBands({ rows, unit = 'ability units' }: { rows: Band[]; u
             <circle cx={x(r.mean)} cy={4} r={1.6} fill="var(--c-accent)" stroke="var(--c-ink)" strokeWidth={0.4} />
           </g>
         ))}
-        <line x1={x(0)} x2={x(0)} y1={0} y2={60} stroke="var(--c-line)" strokeWidth={0.4} strokeDasharray="1 1" />
+        <line x1={x(0)} x2={x(0)} y1={0} y2={rows.length * 12} stroke="var(--c-line)" strokeWidth={0.4} strokeDasharray="1 1" />
       </svg>
       <details>
         <summary className="cursor-pointer py-2">View as a table</summary>

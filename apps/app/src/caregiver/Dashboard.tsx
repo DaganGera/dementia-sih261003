@@ -1,4 +1,5 @@
-import { planDelivery } from '@hillpath/core';
+import { escalation, planDelivery } from '@hillpath/core';
+import { smsHref } from '../lib/sms';
 import { STAGE_LABELS, explainForClinician, explainForFamily, abruptMessage, stageName } from '@hillpath/ml';
 import { useMemo } from 'react';
 import type { AppCore } from '../lib/core';
@@ -47,7 +48,12 @@ export function Dashboard({ core }: { core: AppCore }) {
                   <Tag>{a.tier === 'urgent' ? 'Urgent' : a.tier === 'attention' ? 'Attention' : 'Info'}</Tag> {a.text} <span className="text-muted">{when(a.at)}</span>
                 </span>
                 {!a.acknowledged_at && (
-                  <BigButton className="btn-quiet text-lg" onClick={() => core.replica.set('alert', a.id, { acknowledged_at: Date.now() })}>Got it</BigButton>
+                  <span className="flex flex-col items-end gap-2">
+                    <BigButton className="btn-quiet text-lg" onClick={() => core.replica.set('alert', a.id, { acknowledged_at: Date.now() })}>Got it</BigButton>
+                    {a.tier === 'urgent' && settings.escalation_phone && escalation(a, Date.now()).includes('offer_sms') && (
+                      <a className="btn text-lg" style={{ minHeight: 48 }} href={smsHref(settings.escalation_phone, settings.patient_name)}>Send a text message</a>
+                    )}
+                  </span>
                 )}
               </li>
             ))}
@@ -61,6 +67,7 @@ export function Dashboard({ core }: { core: AppCore }) {
         <p className="tnum mt-2">
           {view.week.sessions} {view.week.sessions === 1 ? 'activity' : 'activities'} on {view.week.daysActive} {view.week.daysActive === 1 ? 'day' : 'days'}.
         </p>
+        <p className="tnum">Memories and music: {view.week.unscored} {view.week.unscored === 1 ? 'session' : 'sessions'}.</p>
         <p className="tnum">Medicine and drink reminders: {view.adh.taken} confirmed of {view.adh.scheduled} due. {view.adh.unconfirmed} not confirmed.</p>
       </section>
 

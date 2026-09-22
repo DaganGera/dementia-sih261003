@@ -13,6 +13,7 @@ export function FamilySetup({ core }: { core: AppCore }) {
   const [carer, setCarer] = useState(s?.carer_name ?? '');
   const [age, setAge] = useState(s?.age ?? 75);
   const [schooling, setSchooling] = useState(s?.schooling ?? 5);
+  const [phone, setPhone] = useState(s?.escalation_phone ?? '');
   const [saved, setSaved] = useState(false);
 
   return (
@@ -23,7 +24,7 @@ export function FamilySetup({ core }: { core: AppCore }) {
           className="card flex flex-col gap-3"
           onSubmit={(e) => {
             e.preventDefault();
-            saveSettings(core, { patient_id: s?.patient_id ?? `p-${Date.now().toString(36)}`, patient_name: name.trim(), carer_name: carer.trim() || 'Your family', age, schooling });
+            saveSettings(core, { patient_id: s?.patient_id ?? `p-${Date.now().toString(36)}`, patient_name: name.trim(), carer_name: carer.trim() || 'Your family', age, schooling, escalation_phone: phone.trim() });
             setSaved(true);
           }}
         >
@@ -35,6 +36,11 @@ export function FamilySetup({ core }: { core: AppCore }) {
             <input className="field" type="number" min={0} max={20} value={schooling} onChange={(e) => setSchooling(Number(e.target.value))} aria-describedby="school-help" />
           </label>
           <p id="school-help" className="text-sm text-muted">Used only to compare scores fairly with people who had similar schooling. Zero is fine.</p>
+          <label>
+            Phone number for an urgent text message (optional)
+            <input className="field" type="tel" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} aria-describedby="phone-help" />
+          </label>
+          <p id="phone-help" className="text-sm text-muted">If the person asks for help and nobody has answered for 15 minutes, Hillpath offers to open a text message to this number. It says only that they need help.</p>
           <BigButton primary type="submit">Save</BigButton>
           {saved && <p role="status">Saved.</p>}
         </form>

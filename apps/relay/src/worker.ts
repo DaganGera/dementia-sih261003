@@ -8,15 +8,15 @@ interface Env {
   };
 }
 
-/** Cloudflare D1 store. Schema: see migrations/0001_init.sql. Deploy needs a Cloudflare account (human task H-08). */
+/** Cloudflare D1 store. Schema: see migrations/0001_init.sql. Deploy needs a Cloudflare account. */
 function d1(env: Env): Store {
   return {
-    async getCircleHash(c) {
-      const r = await env.DB.prepare('SELECT bearer_hash FROM circles WHERE id = ?').bind(c).first<{ bearer_hash: string }>();
-      return r?.bearer_hash ?? null;
+    async getCircle(c) {
+      const r = await env.DB.prepare('SELECT bearer_hash, drop_hash FROM circles WHERE id = ?').bind(c).first<{ bearer_hash: string; drop_hash: string }>();
+      return r ? { bearerHash: r.bearer_hash, dropHash: r.drop_hash } : null;
     },
-    async createCircle(c, h) {
-      await env.DB.prepare('INSERT INTO circles (id, bearer_hash) VALUES (?, ?)').bind(c, h).run();
+    async createCircle(c, b, d) {
+      await env.DB.prepare('INSERT INTO circles (id, bearer_hash, drop_hash) VALUES (?, ?, ?)').bind(c, b, d).run();
     },
     async append(c, e, at) {
       await env.DB.prepare('INSERT INTO envelopes (circle, envelope, received_at) VALUES (?, ?, ?)').bind(c, e, at).run();

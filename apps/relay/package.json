@@ -6,12 +6,15 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "dev": "wrangler dev"
+    "dev": "wrangler dev",
+    "local": "tsx src/node.ts"
   },
   "dependencies": {
+    "@hono/node-server": "2.1.1",
     "hono": "4.13.8"
   },
   "devDependencies": {
+    "@types/node": "22.20.4",
     "wrangler": "4.136.0"
   }
 }
