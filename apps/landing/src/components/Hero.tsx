@@ -16,7 +16,7 @@ export function Hero() {
       <p className="animate-fade-rise-delay mt-8 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">{HERO.body}</p>
       <a
         href="#how"
-        className="animate-fade-rise-delay-2 mt-12 inline-flex rounded-full bg-black px-14 py-5 text-base text-white transition-transform hover:scale-[1.03]"
+        className="animate-fade-rise-delay-2 mt-12 inline-flex rounded-full bg-accent px-14 py-5 text-base text-white transition-transform hover:scale-[1.03]"
       >
         {HERO.cta}
       </a>

@@ -4,6 +4,7 @@ export const NAV = [
   { href: '#activities', label: 'Activities' },
   { href: '#screening', label: 'Screening' },
   { href: '#offline', label: 'Offline and privacy' },
+  { href: '#download', label: 'Get the app' },
   { href: '/limitations/', label: 'Limitations' },
 ] as const;
 
@@ -37,39 +38,38 @@ export const HOW = {
   blocks: [
     {
       title: 'For the person',
-      body: 'Short, calm activities with one choice per screen. No timers, no red crosses, and a voice they know.',
+      body: 'Short, calm activities with one choice per screen. Bilingual by default, with voice support and a large-text mode.',
       image: 'patient-home',
-      alt: 'The Hillpath home screen with a large Play button, a My day button and an I need help button.',
+      alt: 'The Siroi home screen greeting Meena Sharma, with streak, mind points and a Talk to Siroi voice assistant card.',
     },
     {
       title: 'For the family',
-      body: 'Reminders you can record in your own voice, and a weekly view of activity with plain explanations.',
+      body: 'A caregiver dashboard with the patient profile, care team, cognitive analysis and activity trends in one place.',
       image: 'dashboard',
-      alt: 'The family view showing this week, how activities are going and a screening range.',
+      alt: 'The Siroi caregiver dashboard showing the patient profile and quick actions.',
     },
     {
       title: 'For the health worker',
-      body: 'A monthly check with pictures and simple questions, ending in a summary a doctor can read.',
-      image: 'check',
-      alt: 'The monthly check screen with a question about family and friends.',
+      body: 'Daily reminders and medication checkpoints the caregiver sets, synced so the person sees them automatically.',
+      image: 'reminders',
+      alt: 'The Siroi reminders screen with a daily checkpoint and its scheduled time.',
     },
   ],
 };
 
 export const ACTIVITIES = {
-  headline: 'Ten activities that adjust to the day.',
-  body: 'Each round aims for about eight successes in ten. On a harder day the next round gets easier, without comment. Two are unscored: Memories and Music are for enjoying together, never graded. These activities do not treat or reverse dementia.',
+  headline: 'Nine cognitive games that adjust to the day.',
+  body: 'Games cover memory, attention, recognition and recall, each with its own scoring and a short session length. Games do not treat or reverse dementia.',
   items: [
-    { key: 'game-pairs', name: 'Pairs at Home', approach: 'Cognitive stimulation', alt: 'A board of hidden cards for matching pairs of household pictures.' },
-    { key: 'game-faces', name: 'Faces and Names', approach: 'Errorless learning and spaced retrieval', alt: 'A family member shown with three names to choose from.' },
-    { key: 'game-story', name: 'Story Time', approach: 'Reminiscence and cognitive stimulation', alt: 'A short story with a button to hear it again.' },
-    { key: 'game-routine', name: 'Routine Steps', approach: 'Montessori-based activity', alt: 'The steps of making tea, with a question about what comes next.' },
-    { key: 'game-find', name: 'Find It', approach: 'Attention and recognition', alt: 'A grid of pictures with a prompt to find the umbrella.' },
-    { key: 'game-sound', name: 'Sound Match', approach: 'Cognitive stimulation', alt: 'A prompt asking which picture matches the sound just played.' },
-    { key: 'game-weave', name: 'Pattern Weave', approach: 'Attention and recognition', alt: 'A short pattern of tiles with a question about which tile comes next.' },
-    { key: 'game-places', name: 'Places I Know', approach: 'Reminiscence and orientation', alt: 'A caregiver photo of a familiar place, with a question about where it is.' },
-    { key: 'game-memories', name: 'Memories', approach: 'Reminiscence, not scored', alt: 'A happy family memory written by the family, with a button for the next one.' },
-    { key: 'game-music', name: 'Music', approach: 'Music and reminiscence, not scored', alt: 'A list of songs to play, including tunes recorded by family.' },
+    { key: 'memory-match', name: 'Memory Match', approach: 'Flip cards face down and locate all matching pairs.' },
+    { key: 'sequence-recall', name: 'Remember the Sequence', approach: 'Observe colored sequence steps and reproduce the pattern.' },
+    { key: 'who-is-this', name: 'Who Is This?', approach: 'Identify familiar family member photos and names.' },
+    { key: 'familiar-places', name: 'Familiar Places', approach: 'Identify familiar locations and home surroundings.' },
+    { key: 'number-memory', name: 'Number Memory', approach: 'Remember and reproduce a numeric digit sequence.' },
+    { key: 'voice-recall', name: 'Voice Recall', approach: 'Verbal recall and speech interaction activity.' },
+    { key: 'object-recall', name: 'What Did You See?', approach: 'Observe everyday objects, then recall them.' },
+    { key: 'story-recall', name: 'Story Recall', approach: 'Listen to a short warm story and answer questions.' },
+    { key: 'familiar-sounds', name: 'Familiar Sounds', approach: 'Listen to audio sounds and identify what you hear.' },
   ],
 };
 
@@ -96,7 +96,7 @@ export const LANGUAGES = {
 
 export const SCREENING = {
   headline: 'Screening support, not a diagnosis.',
-  body: 'Hillpath estimates a range, shows how sure it is, and asks for a clinical check when it matters. It has only been tested on simulated people, never on real patients.',
+  body: 'Siroi estimates a range, shows how sure it is, and asks for a clinical check when it matters. It has only been tested on simulated people, never on real patients.',
   items: [
     { term: 'Choosing the next activity', tag: 'Implemented', note: 'Runs on real play. Compared with the old rule on simulated people.' },
     { term: 'Screening range', tag: 'Simulated', note: 'Trained on synthetic data only. The screen says so.' },
@@ -104,18 +104,18 @@ export const SCREENING = {
     { term: 'Clinical validation', tag: 'Roadmap', note: 'Needs a pilot with a medical college and ethics approval.' },
   ],
   link: { href: '/limitations/', label: 'Read the limitations' },
-  alt: 'The screening range card with a note that it is a simulated model and not a diagnosis.',
+  alt: 'The Siroi caregiver dashboard with the cognitive analysis card.',
 };
 
 export const OFFLINE = {
-  headline: 'Works in airplane mode.',
+  headline: 'Keeps working when the signal drops.',
   facts: [
-    'Records stay on the phone.',
-    'Anything that leaves is encrypted with keys only your family devices hold.',
-    'No signal? Share by scanning a moving code on the screen.',
+    'Activity is saved on the phone the moment it happens.',
+    'When the connection returns, everything syncs automatically.',
+    'A visible status shows Offline, Syncing or Synced at all times.',
     'You choose who sees what, and can change it at any time.',
   ],
-  alt: 'A moving code on the Send records screen, used to share encrypted records without internet.',
+  alt: 'The Siroi reminders screen with a daily checkpoint.',
 };
 
 export const CLOSING = {

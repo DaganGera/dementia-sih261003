@@ -1,5 +1,6 @@
 import { isScored, type ScoredGameId } from '@hillpath/contracts';
 import { useState } from 'react';
+import { Bell, ClipboardText, House, Lock, ShareNetwork, Stethoscope, UsersThree } from '@phosphor-icons/react';
 import { Dashboard } from './caregiver/Dashboard';
 import { MonthlyCheck } from './caregiver/Check';
 import { BurdenCheck } from './caregiver/Burden';
@@ -20,7 +21,7 @@ import { FamilyGate } from './patient/FamilyLock';
 import { PatientHome } from './patient/Home';
 import { CoPlayRound, PatientPostcards } from './patient/Social';
 import { SocialSetup } from './caregiver/Social';
-import { BigButton, PatientScreen } from './ui/kit';
+import { BigButton, IosInstallHint, PatientScreen } from './ui/kit';
 import { SyncPanel } from './ui/Sync';
 
 export function App() {
@@ -46,6 +47,7 @@ function RoleChooser() {
       <BigButton onClick={() => void core.setRole('caregiver').then(() => go('caregiver', 'home'))} className="w-full">A family member</BigButton>
       <BigButton onClick={() => void core.setRole('health_worker').then(() => go('caregiver', 'visit'))} className="w-full">A community health worker</BigButton>
       <p className="text-base text-muted">Hillpath is a prototype for memory activities and family support. It is not a medical device and does not diagnose. Everything works without internet.</p>
+      <IosInstallHint />
     </main>
   );
 }
@@ -73,6 +75,16 @@ function PatientApp({ route, preview = false }: { route: string[]; preview?: boo
   );
 }
 
+const TAB_ICON: Record<string, typeof House> = {
+  visit: Stethoscope,
+  home: House,
+  reminders: Bell,
+  family: UsersThree,
+  check: ClipboardText,
+  share: ShareNetwork,
+  privacy: Lock,
+};
+
 const TABS: Array<[string, string]> = [
   ['home', 'Home'],
   ['reminders', 'Reminders'],
@@ -90,16 +102,9 @@ function CaregiverApp({ route }: { route: string[] }) {
   void open;
   void setOpen;
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6">
+    <div className="mx-auto max-w-3xl px-4 py-6 pb-24">
       <header className="mb-4">
         <h1 className="text-3xl font-bold">Hillpath</h1>
-        <nav aria-label="Sections" className="mt-3 flex flex-wrap gap-2">
-          {TABS_ALL.map(([k, label]) => (
-            <a key={k} href={`#/caregiver/${k}`} aria-current={tab === k ? 'page' : undefined} className={`btn ${tab === k ? 'btn-primary' : 'btn-quiet'} text-lg`} style={{ minHeight: 48 }}>
-              {label}
-            </a>
-          ))}
-        </nav>
       </header>
       <main>
         {tab === 'visit' && <VisitMode core={core} />}
@@ -125,6 +130,17 @@ function CaregiverApp({ route }: { route: string[] }) {
       <footer className="mt-8 text-sm text-muted">
         <p>Hillpath is a prototype. It is not a medical device and does not diagnose. <a className="underline" href="#/patient">Try the activities as the person sees them</a>. <a className="underline" href="#/demo">Open the simulation</a>.</p>
       </footer>
+      <nav aria-label="Sections" className="tabbar">
+        {TABS_ALL.map(([k, label]) => {
+          const Icon = TAB_ICON[k] ?? House;
+          return (
+            <a key={k} href={`#/caregiver/${k}`} aria-current={tab === k ? 'page' : undefined} className="tab-item">
+              <Icon size={24} weight={tab === k ? 'fill' : 'regular'} aria-hidden />
+              {label}
+            </a>
+          );
+        })}
+      </nav>
     </div>
   );
 }

@@ -9,12 +9,15 @@ const CONTACT = __CONTACT_EMAIL__;
 const shot = (key: string) => `/media/app/${key}.webp`;
 const dims = (key: string) => (shots as Record<string, { width: number; height: number }>)[key] ?? { width: 824, height: 1830 };
 
-/** A real capture from the built app, with the caption underneath and never over the picture. */
-function Capture({ name, alt, caption, className = '' }: { name: string; alt: string; caption?: string; className?: string }) {
+/** A real capture from the built app, with the caption underneath and never over the picture.
+ * With `frame`, the image sits in a fixed-height box so a row of captures with different
+ * natural heights (the activities strip) lines up evenly instead of showing ragged bottoms. */
+function Capture({ name, alt, caption, className = '', frame = false }: { name: string; alt: string; caption?: string; className?: string; frame?: boolean }) {
   const d = dims(name);
+  const img = <img src={shot(name)} alt={alt} width={d.width} height={d.height} loading="lazy" decoding="async" className={frame ? 'h-full w-auto max-w-full rounded-2xl border border-line object-contain' : 'h-auto w-full rounded-2xl border border-line'} />;
   return (
     <figure className={className}>
-      <img src={shot(name)} alt={alt} width={d.width} height={d.height} loading="lazy" decoding="async" className="h-auto w-full rounded-2xl border border-line" />
+      {frame ? <div className="flex h-72 items-center justify-center">{img}</div> : img}
       {caption && <figcaption className="mt-3 text-sm text-muted">{caption}</figcaption>}
     </figure>
   );
@@ -39,6 +42,10 @@ export function Problem() {
             <p key={b} className="reveal" style={{ ['--i' as string]: i + 2 }}>{b}</p>
           ))}
         </div>
+        <figure className="reveal mt-12 max-w-md">
+          <img src="/media/photos/family-hug.webp" alt="A grandmother laughing with her grandchild." width={1600} height={1071} loading="lazy" decoding="async" className="h-auto w-full rounded-2xl border border-line object-cover" />
+          <figcaption className="mt-3 text-sm text-muted">The people this is built for.</figcaption>
+        </figure>
         <ul className="mt-10 flex flex-col gap-2 text-sm">
           {PROBLEM.sources.map((s) => (
             <li key={s.href}>
@@ -107,9 +114,15 @@ export function How() {
 export function Activities() {
   return (
     <section id="activities" className={`${band} py-32`}>
-      <div className={wrap}>
-        <h2 className="reveal max-w-3xl font-display text-4xl text-ink md:text-6xl">{ACTIVITIES.headline}</h2>
-        <p className="reveal mt-6 max-w-2xl text-lg leading-relaxed text-muted" style={{ ['--i' as string]: 1 }}>{ACTIVITIES.body}</p>
+      <div className={`${wrap} grid gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] md:items-end`}>
+        <div>
+          <h2 className="reveal max-w-3xl font-display text-4xl text-ink md:text-6xl">{ACTIVITIES.headline}</h2>
+          <p className="reveal mt-6 max-w-2xl text-lg leading-relaxed text-muted" style={{ ['--i' as string]: 1 }}>{ACTIVITIES.body}</p>
+        </div>
+        <figure className="reveal max-w-xs">
+          <img src="/media/photos/caregiver-coloring.webp" alt="A caregiver helping an elderly couple with an activity at their kitchen table." width={1600} height={1131} loading="lazy" decoding="async" className="h-auto w-full rounded-2xl border border-line object-cover" />
+          <figcaption className="mt-3 text-sm text-muted">Activities a family member or health worker can run.</figcaption>
+        </figure>
       </div>
       <ul
         className="mt-12 flex snap-x snap-mandatory items-start gap-6 overflow-x-auto px-6 pb-8 lg:px-24"
@@ -117,8 +130,8 @@ export function Activities() {
         aria-label="Activities, scroll sideways"
       >
         {ACTIVITIES.items.map((g) => (
-          <li key={g.key} className="w-64 shrink-0 snap-start md:w-72">
-            <Capture name={g.key} alt={g.alt} />
+          <li key={g.name} className="w-64 shrink-0 snap-start md:w-72">
+            <Capture name={g.key} alt={`The Siroi ${g.name} game screen.`} frame />
             <p className="mt-4 font-display text-2xl text-ink">{g.name}</p>
             <p className="text-sm text-muted">{g.approach}</p>
           </li>
@@ -176,7 +189,7 @@ export function Screening() {
             <a className="underline underline-offset-4" href={SCREENING.link.href}>{SCREENING.link.label}</a>
           </p>
         </div>
-        <Capture name="screening" alt={SCREENING.alt} caption="Screen from the app. Simulated model." className="max-w-xs" />
+        <Capture name="dashboard" alt={SCREENING.alt} caption="Screen from the app. Simulated model." className="max-w-xs" />
       </div>
     </section>
   );
@@ -186,7 +199,7 @@ export function Offline() {
   return (
     <section id="offline" className={`${band} py-32`}>
       <div className={`${wrap} grid gap-16 md:grid-cols-2 md:items-center`}>
-        <Capture name="sync" alt={OFFLINE.alt} caption="Screen from the app." className="max-w-xs md:order-first" />
+        <Capture name="reminders" alt={OFFLINE.alt} caption="Screen from the app." className="max-w-xs md:order-first" />
         <div>
           <h2 className="reveal font-display text-4xl text-ink md:text-6xl">{OFFLINE.headline}</h2>
           <ul className="mt-10 space-y-5 text-lg leading-relaxed text-muted">
@@ -200,11 +213,48 @@ export function Offline() {
   );
 }
 
+export function Download() {
+  return (
+    <section id="download" className={`${band} py-32`}>
+      <div className={wrap}>
+        <h2 className="reveal max-w-3xl font-display text-4xl text-ink md:text-6xl">Get Siroi on your phone.</h2>
+        <p className="reveal mt-6 max-w-2xl text-lg leading-relaxed text-muted" style={{ ['--i' as string]: 1 }}>
+          One app, three ways to use it. No app store account needed for Android.
+        </p>
+        <div className="mt-12 grid gap-8 md:grid-cols-3">
+          <div className="rounded-2xl border border-line bg-white p-8">
+            <h3 className="font-display text-2xl text-ink">Android</h3>
+            <p className="mt-3 text-base leading-relaxed text-muted">Download the app file and open it. Your phone may ask you to allow installs from this source once.</p>
+            <a href="/downloads/siroi.apk" download className="mt-6 inline-flex min-h-14 items-center justify-center rounded-full bg-accent px-8 text-base text-white transition-transform hover:scale-[1.03]">
+              Download for Android (APK)
+            </a>
+          </div>
+          <div className="rounded-2xl border border-line bg-white p-8">
+            <h3 className="font-display text-2xl text-ink">iPhone and iPad</h3>
+            <p className="mt-3 text-base leading-relaxed text-muted">Open Siroi in Safari, tap Share, then Add to Home Screen. It opens like an app from then on, no App Store needed.</p>
+            <a href={APP} target="_blank" rel="noreferrer noopener" className="mt-6 inline-flex min-h-14 items-center justify-center rounded-full border-2 border-accent px-8 text-base text-accent transition-transform hover:scale-[1.03]">
+              Open in Safari
+            </a>
+          </div>
+          <div className="rounded-2xl border border-line bg-white p-8">
+            <h3 className="font-display text-2xl text-ink">Any computer</h3>
+            <p className="mt-3 text-base leading-relaxed text-muted">Open the same app directly in a desktop or laptop browser, no install at all.</p>
+            <a href={APP} target="_blank" rel="noreferrer noopener" className="mt-6 inline-flex min-h-14 items-center justify-center rounded-full border-2 border-accent px-8 text-base text-accent transition-transform hover:scale-[1.03]">
+              Open the web app
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function Closing() {
   return (
     <section id="try" className="relative z-10 flex min-h-[80dvh] flex-col items-center justify-center px-6 py-32 text-center">
+      <img src="/media/photos/couple-phone.webp" alt="An elderly couple looking at a phone together on their couch." width={1600} height={900} loading="lazy" decoding="async" className="reveal mb-10 h-auto w-full max-w-xs rounded-2xl border border-line object-cover" />
       <h2 className="reveal max-w-3xl font-display text-5xl text-ink md:text-7xl">{CLOSING.headline}</h2>
-      <a href={APP} className="reveal mt-12 inline-flex rounded-full bg-black px-14 py-5 text-base text-white transition-transform hover:scale-[1.03]" style={{ ['--i' as string]: 1 }}>
+      <a href="#download" className="reveal mt-12 inline-flex rounded-full bg-accent px-14 py-5 text-base text-white transition-transform hover:scale-[1.03]" style={{ ['--i' as string]: 1 }}>
         {CLOSING.cta}
       </a>
     </section>

@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Hero } from './components/Hero';
 import { Nav } from './components/Nav';
-import { Activities, Closing, Footer, Gap, How, Languages, Offline, Problem, Screening } from './components/Sections';
+import { Activities, Closing, Download, Footer, Gap, How, Languages, Offline, Problem, Screening } from './components/Sections';
 import { useReveal } from './components/useReveal';
 
 // The film code (and the motion library) loads after the first paint, so the poster and headline are never waiting on it.
@@ -28,6 +28,8 @@ export function App() {
         <Screening />
         <Gap />
         <Offline />
+        <Gap />
+        <Download />
         <Closing />
       </main>
       <Footer />

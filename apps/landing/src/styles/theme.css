@@ -9,17 +9,17 @@
   --dur-3: 800ms;
   --ease: ease-out;
   --stagger: 200ms;
-  --background: #ffffff;
+  --background: #faf9f4;
 }
 
 @theme inline {
   --font-display: "Instrument Serif", Georgia, serif;
   --font-body: "Inter", system-ui, sans-serif;
   --color-background: var(--background);
-  --color-ink: #000000;
-  --color-muted: #6f6f6f;
-  --color-accent: #1b5e45;
-  --color-line: #d9dcdb;
+  --color-ink: #26332f;
+  --color-muted: #56635d;
+  --color-accent: #176b61;
+  --color-line: #e4ded4;
 }
 
 html {
@@ -33,7 +33,7 @@ html {
 body {
   margin: 0;
   background: var(--background);
-  color: #000000;
+  color: var(--color-ink);
   font-family: var(--font-body);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);

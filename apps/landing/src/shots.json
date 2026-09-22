@@ -1,62 +1,14 @@
 {
- "check": {
-  "width": 824,
-  "height": 1830
- },
- "game-pairs": {
-  "width": 824,
-  "height": 1118
- },
- "game-faces": {
-  "width": 824,
-  "height": 1438
- },
- "game-story": {
-  "width": 824,
-  "height": 1636
- },
- "game-routine": {
-  "width": 824,
-  "height": 1398
- },
- "game-sound": {
-  "width": 824,
-  "height": 1072
- },
- "game-weave": {
-  "width": 824,
-  "height": 944
- },
- "game-places": {
-  "width": 824,
-  "height": 1330
- },
- "game-memories": {
-  "width": 824,
-  "height": 1236
- },
- "game-music": {
-  "width": 824,
-  "height": 896
- },
- "game-find": {
-  "width": 824,
-  "height": 1116
- },
- "patient-home": {
-  "width": 824,
-  "height": 1008
- },
- "dashboard": {
-  "width": 824,
-  "height": 1830
- },
- "screening": {
-  "width": 824,
-  "height": 1830
- },
- "sync": {
-  "width": 824,
-  "height": 1830
- }
+ "patient-home": { "width": 390, "height": 664 },
+ "dashboard": { "width": 390, "height": 664 },
+ "reminders": { "width": 390, "height": 664 },
+ "memory-match": { "width": 390, "height": 488 },
+ "sequence-recall": { "width": 390, "height": 488 },
+ "who-is-this": { "width": 390, "height": 488 },
+ "familiar-places": { "width": 390, "height": 488 },
+ "number-memory": { "width": 390, "height": 488 },
+ "voice-recall": { "width": 390, "height": 488 },
+ "object-recall": { "width": 390, "height": 488 },
+ "story-recall": { "width": 390, "height": 488 },
+ "familiar-sounds": { "width": 390, "height": 488 }
 }
