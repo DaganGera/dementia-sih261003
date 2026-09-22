@@ -6,6 +6,7 @@ import { deleteFact, listFaces, listFacts, listPlaces, listSongs, listWords, sav
 import { useVersion } from '../lib/state';
 import { BigButton, StateNote } from '../ui/kit';
 import { LanguagePicker } from './Language';
+import { OrientationSetup } from './Orientation';
 
 /** Places, life-story facts and songs the family adds. Nothing here is generated: the person only ever sees what the family approved. */
 export function ContentSetup({ core }: { core: AppCore }) {
@@ -15,6 +16,7 @@ export function ContentSetup({ core }: { core: AppCore }) {
       <Facts core={core} />
       <Songs core={core} />
       <VoiceEnrol core={core} />
+      <OrientationSetup core={core} />
       <LanguagePicker core={core} />
     </div>
   );

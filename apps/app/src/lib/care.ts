@@ -1,6 +1,6 @@
 import { deserialise, serialise, type EnrolledWord, type StoredTemplate } from '@hillpath/audio';
 import type { GameId, Trial } from '@hillpath/contracts';
-import { eventKey, type ReminderEvent, type ReminderRule } from '@hillpath/core';
+import { eventKey, type FestivalEntry, type ReminderEvent, type ReminderRule } from '@hillpath/core';
 import { initialModel, isFiniteModel, type AbilityModel } from '@hillpath/ml';
 import type { AppCore } from './core';
 
@@ -186,6 +186,29 @@ export function savePlace(core: AppCore, p: Place): void {
   const exists = core.replica.get('place', p.id);
   const { id, ...fields } = p;
   (exists ? core.replica.set : core.replica.insert).call(core.replica, 'place', id, fields);
+}
+
+// ---------- orientation board ----------
+
+export function listFestivals(core: AppCore): FestivalEntry[] {
+  return core.replica
+    .list('festival')
+    .map((r) => ({ id: r.id, name: String(r.name), month: Number(r.month), day: Number(r.day), source: String(r.source ?? ''), approved: Boolean(r.approved), addedAt: Number(r.added_at ?? 0) }))
+    .sort((a, b) => a.month - b.month || a.day - b.day);
+}
+
+export function addFestival(core: AppCore, name: string, month: number, day: number, source: string): void {
+  const id = `f-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 5)}`;
+  // Every new entry starts unapproved: the family must review it before the person can see it.
+  core.replica.insert('festival', id, { name, month, day, source, approved: false, added_at: Date.now() });
+}
+
+export function setFestivalApproved(core: AppCore, id: string, approved: boolean): void {
+  core.replica.set('festival', id, { approved });
+}
+
+export function deleteFestival(core: AppCore, id: string): void {
+  core.replica.remove('festival', id);
 }
 
 /** A fact the family has approved. Life Story only ever shows these, never generated text. */

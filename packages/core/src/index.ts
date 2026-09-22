@@ -8,6 +8,7 @@ export * from './envelope';
 export * from './fountain';
 export * from './hlc';
 export * from './langpack';
+export * from './orientation';
 export * from './pairing';
 export * from './paging';
 export * from './reminders';
