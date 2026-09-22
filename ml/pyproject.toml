@@ -12,6 +12,14 @@ dependencies = [
 
 [dependency-groups]
 dev = ["pytest==9.1.1", "ruff==0.16.8"]
+# Only m2_candidates.py needs these. The main pipeline (m2lib.py, m2_train.py) and its tests do not.
+candidates = [
+  "interpret-core>=0.7.8",
+  "lightgbm>=4.7.0",
+  "onnxmltools>=1.16.0",
+  "onnxruntime>=1.30.0",
+  "skl2onnx>=1.20.0",
+]
 
 [tool.uv]
 package = false

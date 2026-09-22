@@ -9,7 +9,7 @@ The user asked to finish as fast as possible using the plan, with no datasets th
 | Local store | SQLite WASM on OPFS (BET-1) | Dexie 4.4.6 behind a `Persistence` interface | Listed fallback; no WebView spike needed | A device spike passes |
 | Router | TanStack Router | Small hash router | Fewer moving parts | Route count passes 10 |
 | UI primitives | react-aria-components | Native elements with focus and label rules | Speed | Accessibility audit fails |
-| i18n | Fluent | Typed English string modules with a tier field per language | English only | A second language reaches Tier 1 |
+| i18n | Fluent | Typed English strings (`t()`), plus a signed-pack manager (`packages/core/langpack.ts`, tiers T0 to T3, one-step rollback) so a real translation can be installed later without a code change | English only; the pack manager exists but `TRUSTED_LANG_PUBLIC_KEY` is left empty, so nothing downloaded can verify yet | A translation and review pipeline runs and a publisher key is set |
 | Charts | uPlot | SVG charts with table views | Speed, no dependency | Series exceed 2,000 points |
 | Contracts | JSON Schema plus generated types | zod 4 schemas with inferred types | Listed fallback in T0.7 | Non-TypeScript consumers appear |
 | M2 data | LASI-DAD | Simulator only, tagged Simulated | No applications allowed | A pilot dataset exists |

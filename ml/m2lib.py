@@ -40,7 +40,7 @@ def load(path: str) -> pd.DataFrame:
 
 def split_by_person(df: pd.DataFrame, seed: int = 3):
     """60 / 20 / 20 by person id. Every row of a person lands in one split."""
-    ids = df["person_id"].unique()
+    ids = np.array(df["person_id"].unique(), dtype=object)
     rng = np.random.default_rng(seed)
     rng.shuffle(ids)
     n = len(ids)
