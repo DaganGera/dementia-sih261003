@@ -24,4 +24,4 @@ Technique chosen: canvas image sequence with neighbour blending. Seeking `video.
 
 Fallbacks to the static poster with light CSS parallax: reduced motion, Save-Data, effective connection 2g or 3g, device memory of 2 GB or less, the visitor's pause choice, and no JavaScript.
 
-App screenshots in `public/media/app` come from `apps/app/scripts/capture-landing.mjs`, run against the built app. They show a test family created by the script.
+App screenshots in `public/media/app` come from `apps/app/scripts/capture-landing.mjs`, run against the built app. They show a test family created by the script. As of 2026-09-22 there are 15 captures (10 activities plus the check, patient home, dashboard, screening range and sync screens); PNGs land in `assets-src/shots` (gitignored) and are converted to WebP with `ffmpeg -i in.png -q:v 82 out.webp`, then copied into `public/media/app`. `apps/landing/src/shots.json` (checked in) is a copy of the script's own `shots.json`, used only for each image's width and height attributes.

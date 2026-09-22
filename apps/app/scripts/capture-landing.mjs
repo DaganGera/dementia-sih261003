@@ -44,6 +44,15 @@ await page.goto(`${base}/#/caregiver/reminders`);
 await page.getByLabel('What is it for').fill('morning tablet');
 await click('Add reminder');
 
+// Content for the games that need it: two places for Places I Know, one memory for Life Story.
+await page.goto(`${base}/#/caregiver/family`);
+for (const name of ['The market', 'The river ghat']) {
+  await page.getByLabel('Name of the place').fill(name);
+  await click('Add place');
+}
+await page.getByLabel('What should the person be reminded of?').fill('We used to walk to the river every evening after the day cooled down.');
+await click('Add to the life story');
+
 // Monthly check: capture the first question screen, then finish the check.
 await page.goto(`${base}/#/caregiver/check`);
 await click('Start', { exact: true });
@@ -72,6 +81,21 @@ await shot('game-story', { crop: true });
 await page.goto(`${base}/#/patient/play/G4`);
 await page.getByText('What comes next?').first().waitFor();
 await shot('game-routine', { crop: true });
+await page.goto(`${base}/#/patient/play/G5`);
+await page.getByText('Which picture matches the sound?').waitFor();
+await shot('game-sound', { crop: true });
+await page.goto(`${base}/#/patient/play/G6`);
+await page.getByText('Which tile comes next?').waitFor();
+await shot('game-weave', { crop: true });
+await page.goto(`${base}/#/patient/play/G8`);
+await page.getByText('Where is this?').waitFor();
+await shot('game-places', { crop: true });
+await page.goto(`${base}/#/patient/play/G9`);
+await page.getByRole('button', { name: /Next memory|That is all for now/ }).waitFor();
+await shot('game-memories', { crop: true });
+await page.goto(`${base}/#/patient/play/G10`);
+await page.getByRole('button', { name: 'Morning tune' }).waitFor();
+await shot('game-music', { crop: true });
 
 // One full Find It session so the family view has activity to show.
 await page.goto(`${base}/#/patient/play/G7`);

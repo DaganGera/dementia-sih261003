@@ -31,20 +31,21 @@
 
       <h2 class="mt-12 font-display text-3xl">Maturity</h2>
       <dl class="mt-4 divide-y divide-line">
-        <div class="py-4"><dt class="text-xl">Implemented</dt><dd class="mt-1 text-muted">Runs on real input. Five activities, reminders with the missed-dose rule, pairing and encrypted sharing without internet, the family view, the monthly check, and choosing the next activity level.</dd></div>
-        <div class="py-4"><dt class="text-xl">Simulated</dt><dd class="mt-1 text-muted">Works, but only on synthetic people. The screening range, the trend and forecast, the sudden-change rule, and the twelve-month simulation. Screens say so.</dd></div>
-        <div class="py-4"><dt class="text-xl">Roadmap</dt><dd class="mt-1 text-muted">Planned, not built. More languages with native speakers, voice answers, the health worker visit mode, a doctor report, clinical validation, and Android device testing.</dd></div>
+        <div class="py-4"><dt class="text-xl">Implemented</dt><dd class="mt-1 text-muted">Runs on real input. Ten activities (two of them unscored, for enjoying together), voice answers, reminders with the missed-dose rule, pairing and encrypted sharing without internet (relay, courier, nearby and text message), the family view, the monthly check, a health worker visit mode, a signed doctor report, voice postcards and a shared round of play, a private caregiver check-in that eases alerts when a carer is stretched, an optional PIN or device-unlock on the person's tablet, the orientation board, and choosing the next activity level.</dd></div>
+        <div class="py-4"><dt class="text-xl">Simulated</dt><dd class="mt-1 text-muted">Works, but only on synthetic people. The screening range, the trend and forecast, the sudden-change rule, the time-of-day pattern, and the twelve-month simulation. Screens say so.</dd></div>
+        <div class="py-4"><dt class="text-xl">Roadmap</dt><dd class="mt-1 text-muted">Planned, not built. The language-pack manager exists in code (signed packs, review tiers, rollback), but no language beyond English has been translated or reviewed, so nothing downloaded can install yet. Also planned: clinical validation, Android device testing, and ABDM integration.</dd></div>
       </dl>
 
       <h2 class="mt-12 font-display text-3xl">Known limits, most important first</h2>
       <ol class="mt-4 list-decimal space-y-4 pl-6 text-lg leading-relaxed text-muted">
         <li>No patient has used Hillpath. Results from play are personal trends or simulated.</li>
         <li>The screening range is trained on synthetic people only. No dataset that needs an application was used, so its accuracy for real people is unknown.</li>
-        <li>The questions in the monthly check are Hillpath's own, not a validated instrument, and were designed for a tablet, not a face-to-face interview.</li>
-        <li>The screens are in English only. Families can record messages in any language, but the words on screen are English until native speakers check other languages.</li>
+        <li>The questions in the monthly check are Hillpath's own, not a validated instrument, and were designed for a tablet, not a face-to-face interview. The caregiver check-in is Hillpath's own too, not a validated scale, and its answers never leave the carer's own device.</li>
+        <li>The screens are in English only. Families can record messages in any language, but the words on screen are English until native speakers check other languages, and no downloaded language pack can install until that review happens.</li>
         <li>Mood, sleep, illness, vision, hearing and years of schooling change scores. Hillpath asks about them, compares with people of similar schooling, and holds back a range when something suggests a cause other than dementia.</li>
         <li>Forecasts in the first weeks mostly show typical change. The stage outlook uses an assumed table, not data.</li>
-        <li>The sudden-change rule from play data caught about three in four simulated episodes with about 0.3 false alarms per simulated person-year. The family checklist covers what it misses. Real performance is unknown.</li>
+        <li>The sudden-change rule from play data caught about one in two simulated episodes with about 0.3 false alarms per simulated person-year, measured against the current ten-activity set. The family checklist covers what it misses. Real performance is unknown.</li>
+        <li>The PIN on the person's tablet keeps out an accidental tap; it is not a strong protection against someone who has the device for a long time.</li>
         <li>Reminders can be late on some phones unless exact alarms are allowed, and the Android app has not yet been installed on a phone.</li>
       </ol>
 

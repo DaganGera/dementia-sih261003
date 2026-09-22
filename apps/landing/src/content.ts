@@ -57,14 +57,19 @@ export const HOW = {
 };
 
 export const ACTIVITIES = {
-  headline: 'Activities that adjust to the day.',
-  body: 'Each round aims for about eight successes in ten. On a harder day the next round gets easier, without comment. These activities do not treat or reverse dementia.',
+  headline: 'Ten activities that adjust to the day.',
+  body: 'Each round aims for about eight successes in ten. On a harder day the next round gets easier, without comment. Two are unscored: Memories and Music are for enjoying together, never graded. These activities do not treat or reverse dementia.',
   items: [
     { key: 'game-pairs', name: 'Pairs at Home', approach: 'Cognitive stimulation', alt: 'A board of hidden cards for matching pairs of household pictures.' },
     { key: 'game-faces', name: 'Faces and Names', approach: 'Errorless learning and spaced retrieval', alt: 'A family member shown with three names to choose from.' },
     { key: 'game-story', name: 'Story Time', approach: 'Reminiscence and cognitive stimulation', alt: 'A short story with a button to hear it again.' },
     { key: 'game-routine', name: 'Routine Steps', approach: 'Montessori-based activity', alt: 'The steps of making tea, with a question about what comes next.' },
     { key: 'game-find', name: 'Find It', approach: 'Attention and recognition', alt: 'A grid of pictures with a prompt to find the umbrella.' },
+    { key: 'game-sound', name: 'Sound Match', approach: 'Cognitive stimulation', alt: 'A prompt asking which picture matches the sound just played.' },
+    { key: 'game-weave', name: 'Pattern Weave', approach: 'Attention and recognition', alt: 'A short pattern of tiles with a question about which tile comes next.' },
+    { key: 'game-places', name: 'Places I Know', approach: 'Reminiscence and orientation', alt: 'A caregiver photo of a familiar place, with a question about where it is.' },
+    { key: 'game-memories', name: 'Memories', approach: 'Reminiscence, not scored', alt: 'A happy family memory written by the family, with a button for the next one.' },
+    { key: 'game-music', name: 'Music', approach: 'Music and reminiscence, not scored', alt: 'A list of songs to play, including tunes recorded by family.' },
   ],
 };
 

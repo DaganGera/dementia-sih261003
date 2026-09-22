@@ -5,7 +5,7 @@
  },
  "game-pairs": {
   "width": 824,
-  "height": 1378
+  "height": 1118
  },
  "game-faces": {
   "width": 824,
@@ -13,11 +13,31 @@
  },
  "game-story": {
   "width": 824,
-  "height": 1380
+  "height": 1636
  },
  "game-routine": {
   "width": 824,
   "height": 1398
+ },
+ "game-sound": {
+  "width": 824,
+  "height": 1072
+ },
+ "game-weave": {
+  "width": 824,
+  "height": 944
+ },
+ "game-places": {
+  "width": 824,
+  "height": 1330
+ },
+ "game-memories": {
+  "width": 824,
+  "height": 1236
+ },
+ "game-music": {
+  "width": 824,
+  "height": 896
  },
  "game-find": {
   "width": 824,
@@ -25,7 +45,7 @@
  },
  "patient-home": {
   "width": 824,
-  "height": 832
+  "height": 1008
  },
  "dashboard": {
   "width": 824,
