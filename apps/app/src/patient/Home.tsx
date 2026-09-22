@@ -5,6 +5,7 @@ import { CalendarCheck, HandWaving, Images, MoonStars, MusicNotes, Play } from '
 import { useEffect, useMemo, useState } from 'react';
 import type { AppCore } from '../lib/core';
 import { getSettings, listEvents, listFaces, listPlaces, listReminders, listSessions, raiseAlert, writeEvent } from '../lib/care';
+import { t } from '../lib/i18n';
 import { timeOfDayNow } from '../lib/insights';
 import { go } from '../lib/router';
 import { smsHref } from '../lib/sms';
@@ -46,7 +47,7 @@ export function PatientHome({ core }: { core: AppCore }) {
   if (active) return <DueScreen core={core} rule={active.rule} scheduledFor={active.at} carer={settings?.carer_name ?? 'Your family'} onClose={() => setActive(null)} />;
 
   return (
-    <PatientScreen title={`Hello, ${name}`} onHear={() => void say(core, 'greeting', `Hello ${name}. Would you like to play a little?`)}>
+    <PatientScreen title={t(core, 'home.greeting', { name })} onHear={() => void say(core, 'greeting', `Hello ${name}. Would you like to play a little?`)}>
       {evening && (
         <div className="card" role="note" data-testid="evening-note">
           <p className="flex items-center gap-2 text-xl font-bold"><MoonStars size={28} aria-hidden />A gentle evening</p>
@@ -55,21 +56,21 @@ export function PatientHome({ core }: { core: AppCore }) {
       )}
       <BigButton primary onClick={() => go('patient', 'play', game)} className="w-full py-6">
         <Play size={36} weight="fill" aria-hidden />
-        Play: {GAMES[game].title}
+        {t(core, 'home.play', { title: GAMES[game].title })}
       </BigButton>
       <BigButton onClick={() => go('patient', 'day')} className="w-full">
         <CalendarCheck size={32} aria-hidden />
-        My day
+        {t(core, 'home.day')}
       </BigButton>
       <SocialButtons core={core} />
       <div className="grid grid-cols-2 gap-4">
         <BigButton onClick={() => go('patient', 'play', 'G9')} className="btn-quiet">
           <Images size={32} aria-hidden />
-          Memories
+          {t(core, 'home.memories')}
         </BigButton>
         <BigButton onClick={() => go('patient', 'play', 'G10')} className="btn-quiet">
           <MusicNotes size={32} aria-hidden />
-          Music
+          {t(core, 'home.music')}
         </BigButton>
       </div>
       <BigButton
@@ -81,12 +82,12 @@ export function PatientHome({ core }: { core: AppCore }) {
         className="btn-quiet mt-8 w-full"
       >
         <HandWaving size={32} aria-hidden />
-        I need help
+        {t(core, 'home.help')}
       </BigButton>
       {helpSent && (
         <StateNote
           kind="loading"
-          title="I have told your family."
+          title={t(core, 'home.help_sent')}
           body="They will come soon."
           action={settings?.escalation_phone ? <a className="btn" href={smsHref(settings.escalation_phone, name === 'friend' ? '' : name)}>Also send a text message</a> : undefined}
         />
@@ -146,12 +147,12 @@ function DueScreen({ core, rule, scheduledFor, carer, onClose }: { core: AppCore
       {message ? (
         <>
           <p className="card" role="status">{message}</p>
-          <BigButton primary onClick={onClose} className="w-full">Back to home</BigButton>
+          <BigButton primary onClick={onClose} className="w-full">{t(core, 'reminder.back')}</BigButton>
         </>
       ) : (
         <>
-          <BigButton primary onClick={confirm} className="w-full py-6">Yes, done</BigButton>
-          <BigButton onClick={notSure} className="btn-quiet w-full">I am not sure</BigButton>
+          <BigButton primary onClick={confirm} className="w-full py-6">{t(core, 'reminder.confirm')}</BigButton>
+          <BigButton onClick={notSure} className="btn-quiet w-full">{t(core, 'reminder.not_sure')}</BigButton>
         </>
       )}
     </PatientScreen>

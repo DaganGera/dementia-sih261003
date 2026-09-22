@@ -7,6 +7,7 @@ export * from './crypto';
 export * from './envelope';
 export * from './fountain';
 export * from './hlc';
+export * from './langpack';
 export * from './pairing';
 export * from './paging';
 export * from './reminders';
