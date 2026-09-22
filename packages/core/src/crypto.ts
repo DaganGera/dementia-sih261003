@@ -26,6 +26,10 @@ export function relayBearer(circleKey: Uint8Array): string {
   return toHex(hkdf(sha256, circleKey, undefined, utf8('hillpath-relay-bearer'), 32));
 }
 
+export function sha256Bytes(data: Uint8Array): Uint8Array {
+  return sha256(data);
+}
+
 export function bearerHash(bearer: string): string {
   return toHex(sha256(utf8(bearer)));
 }

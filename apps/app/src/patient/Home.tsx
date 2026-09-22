@@ -10,6 +10,7 @@ import { smsHref } from '../lib/sms';
 import { say } from '../lib/voice';
 import { useVersion } from '../lib/state';
 import { BigButton, PatientScreen, StateNote } from '../ui/kit';
+import { SocialButtons } from './Social';
 
 const ORDER: ScoredGameId[] = ['G1', 'G2', 'G3', 'G4', 'G7', 'G5', 'G6', 'G8'];
 
@@ -52,6 +53,7 @@ export function PatientHome({ core }: { core: AppCore }) {
         <CalendarCheck size={32} aria-hidden />
         My day
       </BigButton>
+      <SocialButtons core={core} />
       <div className="grid grid-cols-2 gap-4">
         <BigButton onClick={() => go('patient', 'play', 'G9')} className="btn-quiet">
           <Images size={32} aria-hidden />

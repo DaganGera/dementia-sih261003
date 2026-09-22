@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { CheckCircle, ClipboardText, Hand, ListChecks, MapPin, Smiley, Timer, Users, Warning, type Icon } from '@phosphor-icons/react';
+import { useEffect, useRef, useState } from 'react';
 import type { AppCore } from '../lib/core';
 import { getSettings, saveInstrument } from '../lib/care';
 import { speak } from '../lib/voice';
@@ -38,7 +39,32 @@ const ACUTE: Array<[string, string]> = [
 type Step = 'intro' | 'informant' | 'adl' | 'fluency' | 'recall' | 'orient' | 'mood' | 'acute' | 'done';
 const ORDER: Step[] = ['intro', 'informant', 'adl', 'fluency', 'recall', 'orient', 'mood', 'acute', 'done'];
 
-export function MonthlyCheck({ core }: { core: AppCore }) {
+const STEP_TITLES: Record<Step, string> = {
+  intro: 'Monthly check',
+  informant: 'Family questions',
+  adl: 'Daily tasks',
+  fluency: 'Naming animals',
+  recall: 'Remembering words',
+  orient: 'Where and when',
+  mood: 'Mood, seeing and hearing',
+  acute: 'Anything sudden in the last two weeks',
+  done: 'The check is saved',
+};
+
+const STEP_ICONS: Record<Step, Icon> = {
+  intro: ClipboardText,
+  informant: Users,
+  adl: Hand,
+  fluency: Timer,
+  recall: ListChecks,
+  orient: MapPin,
+  mood: Smiley,
+  acute: Warning,
+  done: CheckCircle,
+};
+
+/** `visit` is the home-visit mode for community health workers: a large picture for each step and each step read aloud. */
+export function MonthlyCheck({ core, visit = false }: { core: AppCore; visit?: boolean }) {
   const settings = getSettings(core);
   const [step, setStep] = useState<Step>('intro');
   const [rating, setRating] = useState<number[]>(INFORMANT.map(() => 3));
@@ -53,7 +79,12 @@ export function MonthlyCheck({ core }: { core: AppCore }) {
   const [acute, setAcute] = useState<Record<string, boolean>>({});
   const timer = useRef(0);
 
+  useEffect(() => {
+    if (visit) speak(STEP_TITLES[step]);
+  }, [step, visit]);
+
   if (!settings) return <StateNote kind="empty" title="Set up the person first." body="Open Family to add a name, age and years of schooling." />;
+  const StepIcon = STEP_ICONS[step];
   const next = () => setStep(ORDER[ORDER.indexOf(step) + 1]!);
   const name = settings.patient_name || 'the person';
 
@@ -89,7 +120,13 @@ export function MonthlyCheck({ core }: { core: AppCore }) {
   };
 
   return (
-    <section className="flex flex-col gap-4" aria-label="Monthly check">
+    <section className="flex flex-col gap-4" aria-label={visit ? 'Home visit check' : 'Monthly check'} data-visit={visit ? 'true' : undefined}>
+      {visit && (
+        <div className="flex items-center gap-4" data-testid="visit-step">
+          <StepIcon size={64} weight="duotone" aria-hidden />
+          <BigButton className="btn-quiet" onClick={() => speak(STEP_TITLES[step])} aria-label="Hear this step again">Hear this step</BigButton>
+        </div>
+      )}
       {step === 'intro' && (
         <>
           <h2 className="text-2xl font-bold">Monthly check</h2>

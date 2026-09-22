@@ -20,6 +20,7 @@
     "@hillpath/contracts": "workspace:*",
     "@hillpath/core": "workspace:*",
     "@hillpath/ml": "workspace:*",
+    "@hillpath/report": "workspace:*",
     "@hillpath/sim": "workspace:*",
     "@phosphor-icons/react": "2.1.10",
     "dexie": "4.4.6",
