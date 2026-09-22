@@ -8,6 +8,7 @@ import { abruptNow, adherence, bands, stageNow, stageOutlook, trend, weekSummary
 import { useVersion } from '../lib/state';
 import { AbilityBands, ForecastTable } from '../ui/charts';
 import { BigButton, SimulatedRibbon, StateNote, Tag } from '../ui/kit';
+import { attentionBudget } from './Burden';
 
 const when = (ms: number) => new Date(ms).toLocaleString([], { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
 
@@ -23,7 +24,8 @@ export function Dashboard({ core }: { core: AppCore }) {
 
   if (!settings) return <StateNote kind="empty" title="Set up the person first." body="Open Family to add a name, age and years of schooling." />;
   const synthetic = view.week.synthetic;
-  const plan = planDelivery(view.alerts.filter((a) => !a.acknowledged_at), Date.now());
+  const budget = attentionBudget(core);
+  const plan = planDelivery(view.alerts.filter((a) => !a.acknowledged_at), Date.now(), 0, budget);
 
   return (
     <div className="flex flex-col gap-6">
@@ -59,7 +61,10 @@ export function Dashboard({ core }: { core: AppCore }) {
             ))}
           </ul>
         )}
-        <p className="mt-3 text-sm text-muted">{plan.push.length} to push now, {plan.digest.length} for the daily summary.</p>
+        <p className="mt-3 text-sm text-muted" data-testid="alert-plan">
+          {plan.push.length} to push now, {plan.digest.length} for the daily summary.
+          {budget < 3 && ' Fewer non-urgent alerts are sent while you are stretched. Urgent ones always come through.'}
+        </p>
       </section>
 
       <section aria-labelledby="h-week" className="card">

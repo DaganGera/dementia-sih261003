@@ -29,11 +29,11 @@ function dayKey(ms: number): string {
  * Info always waits. Attention is merged by kind per day and capped per day.
  * Urgent is always pushed and can never be snoozed or batched.
  */
-export function planDelivery(alerts: AlertItem[], now: number, alreadyPushedToday = 0): Plan {
+export function planDelivery(alerts: AlertItem[], now: number, alreadyPushedToday = 0, dailyBudget = ATTENTION_PUSH_BUDGET_PER_DAY): Plan {
   const push: AlertItem[] = [];
   const digest: AlertItem[] = [];
   const seenKinds = new Set<string>();
-  let budget = Math.max(0, ATTENTION_PUSH_BUDGET_PER_DAY - alreadyPushedToday);
+  let budget = Math.max(0, dailyBudget - alreadyPushedToday);
   const ordered = [...alerts].sort((a, b) => a.at - b.at);
   for (const a of ordered) {
     if (a.acknowledged_at) continue;

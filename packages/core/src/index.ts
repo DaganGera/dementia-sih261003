@@ -1,5 +1,6 @@
 export * from './alerts';
 export * from './audit';
+export * from './burden';
 export * from './bytes';
 export * from './consent';
 export * from './crypto';

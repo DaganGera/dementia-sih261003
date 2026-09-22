@@ -89,6 +89,8 @@ export class AppCore {
   deviceId = '';
   role: Role | null = null;
   circle: Circle | null = null;
+  /** Device-only values (carer check-in answers, PIN hash, language pack state). Sealed at rest, never synced or reported. */
+  local: Record<string, unknown> = {};
   private listeners = new Set<() => void>();
   version = 0;
 
@@ -108,6 +110,7 @@ export class AppCore {
     }
     const cs = await loadSecret<CircleStored>(c.db, c.vault, 'circle');
     if (cs) c.circle = { id: cs.id, key: fromB64(cs.key), peers: cs.peers, sent: cs.sent, relay: cs.relay };
+    c.local = (await loadSecret<Record<string, unknown>>(c.db, c.vault, 'local')) ?? {};
     c.replica = new Replica(c.deviceId, dexiePersistence(c.db, c.vault));
     await c.replica.open();
     c.replica.subscribe(() => c.bump());
@@ -134,6 +137,16 @@ export class AppCore {
     if (!this.circle) return;
     const c: CircleStored = { id: this.circle.id, key: toB64(this.circle.key), peers: this.circle.peers, sent: this.circle.sent, relay: this.circle.relay };
     await saveSecret(this.db, this.vault, 'circle', c);
+  }
+
+  getLocal<T>(name: string, fallback: T): T {
+    return name in this.local ? (this.local[name] as T) : fallback;
+  }
+
+  async putLocal(name: string, value: unknown): Promise<void> {
+    this.local = { ...this.local, [name]: value };
+    await saveSecret(this.db, this.vault, 'local', this.local);
+    this.bump();
   }
 
   async setRole(role: Role): Promise<void> {

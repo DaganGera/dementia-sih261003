@@ -2,6 +2,7 @@ import { isScored, type ScoredGameId } from '@hillpath/contracts';
 import { useState } from 'react';
 import { Dashboard } from './caregiver/Dashboard';
 import { MonthlyCheck } from './caregiver/Check';
+import { BurdenCheck } from './caregiver/Burden';
 import { ContentSetup } from './caregiver/Content';
 import { FamilySetup } from './caregiver/Family';
 import { PrivacyPanel } from './caregiver/Privacy';
@@ -15,6 +16,7 @@ import { useCore, useVersion } from './lib/state';
 import { PatientDay } from './patient/Day';
 import { GameRunner } from './patient/games/engine';
 import { LifeStory, SongCircle } from './patient/games/Unscored';
+import { FamilyGate } from './patient/FamilyLock';
 import { PatientHome } from './patient/Home';
 import { CoPlayRound, PatientPostcards } from './patient/Social';
 import { SocialSetup } from './caregiver/Social';
@@ -56,7 +58,7 @@ function PatientApp({ route, preview = false }: { route: string[]; preview?: boo
   if (route[1] === 'postcards') return <PatientPostcards core={core} />;
   if (route[1] === 'together' && route[2]) return <CoPlayRound key={route[2]} core={core} seed={Number(route[2])} coplayId={route[3]} />;
   if (route[1] === 'day') return <PatientDay core={core} />;
-  if (route[1] === 'family') return <FamilyGate />;
+  if (route[1] === 'family') return <FamilyGate core={core} />;
   return (
     <>
       <PatientHome core={core} />
@@ -68,15 +70,6 @@ function PatientApp({ route, preview = false }: { route: string[]; preview?: boo
         )}
       </p>
     </>
-  );
-}
-
-function FamilyGate() {
-  const core = useCore();
-  return (
-    <PatientScreen title="For family" onBack={() => go('patient')}>
-      <SyncPanel core={core} />
-    </PatientScreen>
   );
 }
 
@@ -113,6 +106,7 @@ function CaregiverApp({ route }: { route: string[] }) {
         {tab === 'home' && (
           <div className="flex flex-col gap-6">
             <Dashboard core={core} />
+            {core.role === 'caregiver' && <BurdenCheck core={core} />}
             <ReportPanel core={core} />
           </div>
         )}

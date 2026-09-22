@@ -3,6 +3,7 @@ import { appendAudit, grantConsent, hasConsent, revokeConsent, verifyChain, type
 import { useState } from 'react';
 import type { AppCore } from '../lib/core';
 import { getSettings } from '../lib/care';
+import { requestPinReset } from '../lib/pin';
 import { useVersion } from '../lib/state';
 import { BigButton, StateNote } from '../ui/kit';
 
@@ -37,6 +38,7 @@ export function PrivacyPanel({ core }: { core: AppCore }) {
   const subject = getSettings(core)?.patient_id ?? 'patient';
   const [method, setMethod] = useState<ConsentMethod>('self_supported');
   const [msg, setMsg] = useState<string | null>(null);
+  const [pinMsg, setPinMsg] = useState<string | null>(null);
   const chain = auditChain(core);
   const broken = verifyChain(chain);
 
@@ -74,6 +76,12 @@ export function PrivacyPanel({ core }: { core: AppCore }) {
           );
         })}
       </ul>
+      <section aria-labelledby="h-pin" className="card flex flex-col gap-2">
+        <h3 id="h-pin" className="text-xl font-bold">The tablet's family lock</h3>
+        <p>If the person's tablet asks for a family PIN and it is forgotten, this removes the lock the next time records reach the tablet.</p>
+        <BigButton onClick={() => { requestPinReset(core); logAudit(core, 'tablet_pin_reset_requested', 'tablet'); setPinMsg('Done. Share records with the tablet to finish.'); }} className="text-lg">Reset the tablet PIN</BigButton>
+        {pinMsg && <p role="status">{pinMsg}</p>}
+      </section>
       <section aria-labelledby="h-audit">
         <h3 id="h-audit" className="text-xl font-bold">Activity log</h3>
         <p data-testid="audit-status" role="status">{chain.length === 0 ? 'Nothing logged yet.' : broken === -1 ? `${chain.length} entries. The log is intact.` : `The log was changed at entry ${broken + 1}.`}</p>
