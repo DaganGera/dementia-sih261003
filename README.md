@@ -14,8 +14,8 @@ The full plan is in `implementation_plan.md`. What is built, what is simulated a
 | `packages/core` | Op-log with hybrid logical clocks, encryption, pairing, QR paging, reminders, alerts, consent, audit log. |
 | `packages/ml` | M1 ability model and level choice, M2 staging evaluator, M3 trend and change, M4 explanations. |
 | `packages/sim` | The simulator and the evaluation harness. Everything it makes is synthetic. |
-| `ml` | Python pipeline that trains M2 on simulator output. |
-| `tools` | Avoid-list checker, hero media build. |
+| `ml` | Python pipeline that trains M2 on simulator output, plus a candidate comparison against a monotone LightGBM and an Explainable Boosting Classifier (`m2_candidates.py`, needs `uv sync --group candidates`). |
+| `tools` | Avoid-list checker, hero media build, language-pack build and tier check (`tools/content`). |
 
 ## Run it
 
@@ -35,8 +35,23 @@ $env:SITE_ORIGIN = 'http://localhost:4174'; $env:APP_URL = 'http://localhost:417
 pnpm --filter landing build
 pnpm --filter landing preview        # http://localhost:4174
 
-pnpm --filter app e2e                # two offline devices, five games, monthly check, time machine
+pnpm --filter app e2e                # ten activities, sync ladder, visit mode and doctor report, postcards, PIN lock, orientation board, time of day, language picker
 pnpm --filter landing e2e            # meta, widths, film states, accessibility, links
+```
+
+Compare M2 candidates against the shipped model (Simulated; needs the `candidates` dependency group):
+
+```powershell
+cd ml
+uv sync --group candidates
+uv run python m2_candidates.py --data data/sim/m2.jsonl --report reports/m2-candidates.md
+```
+
+Build a signed language pack, and check every built pack's tier (`ml/reports` are Python; this is Node, from the repo root):
+
+```powershell
+pnpm exec tsx tools/content/build-pack.ts --lang hin --tier T2 --strings path\to\strings.json
+pnpm exec tsx tools/content/tier-check.ts
 ```
 
 Retrain the staging model from simulated data:

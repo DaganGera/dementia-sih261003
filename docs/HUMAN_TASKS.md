@@ -10,7 +10,8 @@ Ordered by how much they block. IDs match the plan (section 12.7).
 | H-07 | Confirm the rights and origin of the hero clip, or shoot replacement footage | Public launch, demo video |
 | H-14 | Record the family prompts for the demo in your own voice (Family screen, on the tablet) | Demo |
 | H-13 | Ask a geriatric psychiatrist or neurologist to read the wording and the screening screen | Credibility |
-| H-09 | Email the licence holders of any instrument you want to add (IQCODE, AD8). The app uses its own items until then | Validity claims |
+| H-09 | Email the licence holders of any instrument you want to add (IQCODE, AD8). The app uses its own items until then; the caregiver check-in also ships as Hillpath's own, explicitly labelled not a validated scale, rather than waiting on this | Validity claims |
+| New | Run the translation and review pipeline (plan 8.3): draft, have a translator and a second native checker sign off, build a pack with `tools/content/build-pack.ts`, then set `TRUSTED_LANG_PUBLIC_KEY` in `apps/app/src/lib/i18n.ts` to the signing key's public half. Until this runs, no language beyond English can install, by design | Any language beyond English |
 | H-10 | Trademark search for "Hillpath" with IP India | Launch |
 | H-16 | Record your own demo video narration; no generated voice or footage (third-party report of the SIH rule, unverified) | Submission |
 | H-15 | Run `docs/e2e/airplane.md` on real devices and record the S-ALARM and S-DB numbers | Claims about alarms and storage |

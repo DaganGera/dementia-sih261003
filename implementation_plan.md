@@ -120,21 +120,22 @@ The user asked to finish the project as fast as possible using this plan, with t
 
 ### 0.10 Build status (2026-09-22)
 
-A first build of P0 exists in this folder. Read `docs/status.md` for the requirement-by-requirement state with evidence, `docs/known-gaps.md` for what does not work, and `README.md` for commands.
+P0 and P1 are built, and most of P2. Read `docs/status.md` for the requirement-by-requirement state with evidence, `docs/known-gaps.md` for what does not work, and `README.md` for commands.
 
 Differences from this plan, beyond 0.9:
 
 | Plan | Built | Why |
 |---|---|---|
-| 10 games, 5 in P0 | The same 5 (G1, G2, G3, G4, G7) | P1 games need cultural review and rights-cleared assets |
+| 10 activities, 5 in P0 | All 10: the original 5 (Pairs at Home, Faces and Names, Story Time, Routine Steps, Find It) plus Sound Match, Pattern Weave, Places I Know, and the unscored Memories and Music | Built across this pass, not staged by phase |
 | Time machine in P1 | Built early, in the app at `#/demo` | The simulator was ready and it is the strongest demo beat |
-| Sudden-change rule per domain | A pooled rule for sparse play, z above 3.5, plus the family checklist | The per-domain rule needs daily data; measured sensitivity 22 of 30 (target 0.9 not met) |
-| M2 trained on LASI-DAD, then NACC | Trained on simulator output, tagged Simulated everywhere | Decision Q4 |
-| Relay client in the sync ladder | Relay server and D1 adapter built and tested; client not wired; QR is the only transport | Time |
-| Animated fountain-coded QR | Looping QR pages, any order, gzip first | Simpler and works with a plain scanner |
-| Visit mode, FHIR, doctor report, voice answers, postcards | Not built | P1 and P2 |
+| Sudden-change rule per domain | A pooled rule for sparse play, z above 3.5, plus the family checklist | The per-domain rule needs daily data; measured sensitivity 15 of 30 against the current ten-activity roster (target 0.9 not met; was 22 of 30 when first tuned against five activities, see `docs/known-gaps.md` item 9) |
+| M2 trained on LASI-DAD, then NACC | Trained on simulator output, tagged Simulated everywhere. A monotone LightGBM and an EBM were compared against it under the fixed selection rule (5.8); the shipped model kept its place | Decision Q4 |
+| Relay client in the sync ladder | Relay server and client both built and tested; also courier mode with a write-only drop token, and LAN WebRTC by QR-exchanged SDP. Not deployed to a public Cloudflare Worker | Time; deploy needs H-New in `docs/HUMAN_TASKS.md` |
+| Animated fountain-coded QR | Looping QR pages for short records, fountain (LT) frames above about 1200 characters, gzip first | Simpler for short records, robust for long ones |
+| Visit mode, FHIR, doctor report, voice answers, postcards | Built. Visit mode has a spoken and pictured monthly check; the report is Ed25519-signed and FHIR-structural-checked, not HL7-validated (no Java 17+ on this machine) and claims no ABDM profile; voice answers use personal keyword spotting, accuracy measured on synthetic speech only; postcards are short voice clips (about 15 seconds) with an optional photo | P1 and P2, finished in this pass |
+| Caregiver burden check, PIN gate, time-of-day view, language-pack manager, orientation board | Built. The burden check is Hillpath's own six items, labelled not validated, answers device-only; the PIN is PBKDF2 with slower retries, plus an optional platform passkey; the time-of-day view is Simulated (F24); the language-pack manager is signed and tiered but ships no language beyond English; the orientation board hides a new festival until a family member approves it | P2, finished in this pass |
 | Landing scrub technique spike S-LAND | Canvas image sequence chosen without measuring the two alternatives | Time; numbers in `docs/landing-media.md` |
-| Sections 6 and 7 of the landing page use product screenshots | Real captures of the built app, produced by `apps/app/scripts/capture-landing.mjs` | As specified |
+| Sections 6 and 7 of the landing page use product screenshots | Real captures of the built app, all 10 activities, produced by `apps/app/scripts/capture-landing.mjs` | As specified |
 
 ## 1. Product thesis and jury strategy
 

@@ -29,6 +29,8 @@ Version 0.1, 2026-09-22. Maturity for every model below is stated per model. Non
 | Intended use | Prompt a person to ask for a clinical check |
 | Out of scope | Diagnosis, insurance, employment, triage without a clinician, use with tablet-delivered instruments as if they were validated |
 | Limits | Circular by construction: the simulator draws each instrument from the stage the model predicts. Incorporation bias would also exist with real labels. Education norms reduce, but do not remove, literacy bias |
+| Candidates considered | A monotone-constrained LightGBM and an Explainable Boosting Classifier (interpret, main effects only) were trained on the same split and norms, and compared under the selection rule fixed in section 5.8 of the plan: lowest mean absolute stage error among models with an expected calibration error of 0.05 or less, ties to the simpler model. All three cleared the ECE target; the shipped ordinal model had the lowest MAE (0.409 against 0.431 for LightGBM and 0.424 for EBM) and kept its place. `ml/reports/m2-candidates.md`, `ml/m2_candidates.py` |
+| ONNX | The LightGBM candidate exports to ONNX and matches its native probabilities to about 2e-7 (max absolute difference). EBM has no maintained mainstream ONNX converter, so that path was left unattempted rather than faked. Neither candidate ships; this is a feasibility check, not a deployment |
 
 ## M3: trend, forecast and sudden-change path
 
@@ -38,8 +40,9 @@ Version 0.1, 2026-09-22. Maturity for every model below is stated per model. Non
 | Faster than typical | Shown only when the personal slope is steeper than the range's 90th percentile with probability above 0.9 |
 | Stage outlook | An assumed transition table, interpolated for 3 and 6 months. Not from data |
 | Change points | Bayesian online change-point detection is implemented and tested; the app uses the sudden-change path |
-| Sudden change | Two paths. The family checklist (sudden confusion, drowsiness or agitation) always raises a same-day health check. Stroke signs say to call 108. The data rule pools recent play against the previous six weeks and needs a drop of at least 0.2 with z above 3.5 across two or more areas. In simulation: 22 of 30 episodes found, 0.30 false alarms per stable person-year |
+| Sudden change | Two paths. The family checklist (sudden confusion, drowsiness or agitation) always raises a same-day health check. Stroke signs say to call 108. The data rule pools recent play against the previous six weeks and needs a drop of at least 0.2 with z above 3.5 across two or more areas. In simulation, against the current ten-activity roster: 15 of 30 episodes found (was 22 of 30 against the five-activity roster this was first tuned on; see `docs/known-gaps.md` item 9), 0.30 false alarms per stable person-year |
 | Acute windows | Excluded from trend estimation in the plan; the trend code has the mask function but the app does not yet open a window automatically |
+| Time-of-day pattern (F24) | Bins a person's own sessions by hour into morning, afternoon, evening and night, and flags an evening dip only once both groups have at least 6 sessions. Descriptive only: never feeds the stage estimate or the trend. `packages/ml/src/timeofday.ts`. In simulation (S8_evening personas, 120 days of play): 24 of 30 flagged, 0 of 30 false positives on stable personas |
 | Maturity | Simulated |
 
 ## M4: explanations
