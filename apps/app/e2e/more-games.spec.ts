@@ -107,7 +107,7 @@ test('Song Circle plays a built-in tune and a family recording', async ({ page }
   );
   await page.getByLabel('Title', { exact: true }).fill('Evening hymn');
   await page.getByLabel('Audio file').setInputFiles({ name: 'hymn.wav', mimeType: 'audio/wav', buffer: wav });
-  await page.getByLabel('Words (optional)').fill('Peace be with you');
+  await page.getByLabel('Words (optional)', { exact: true }).fill('Peace be with you');
   await page.getByRole('button', { name: 'Add song' }).click();
   await expect(page.getByText(/The song stays on this device/)).toBeVisible();
   await page.goto('/#/patient/play/G10');

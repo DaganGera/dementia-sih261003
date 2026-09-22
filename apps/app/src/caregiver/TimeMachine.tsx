@@ -20,8 +20,8 @@ export function TimeMachine() {
   const [day, setDay] = useState(0);
   const [playing, setPlaying] = useState(false);
   const sim = useMemo(() => {
-    // Persona 1 is a run where the simulated episode starts on day 94; the data rule fires on day 97.
-    const p = makePersona(1, scenario, 21, scenario === 'S1_stable' ? 0 : 1);
+    // Persona 5 (seed 1) is a run where the simulated episode starts on day 106 and the data rule fires that same day.
+    const p = makePersona(5, scenario, 1, scenario === 'S1_stable' ? 0 : 1);
     const run = runPersona(p, { days: DAYS, policy: 'm1' });
     const inst = instrumentsFor(p, rng(5));
     const est = estimateStage(M2, inst, {}, 0);
