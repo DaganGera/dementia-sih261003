@@ -22,6 +22,8 @@ export interface DayLog {
   composite?: { mean: number; sd: number };
   /** Mean of (correct minus expected) for the day's session, keyed by domain. */
   excess?: Partial<Record<Domain, number>>;
+  /** Hour of day (0-23) the session was played, when one was played. Only S8_evening reads it. */
+  hour?: number;
 }
 
 export interface RunOptions {
@@ -62,6 +64,9 @@ export function runPersona(p: Persona, o: RunOptions): RunResult {
     const log: DayLog = { day, rounds: 0, successes: 0, inBand: 0, trials: [] };
     days.push(log);
     if (!playsOn(p, day, r)) continue;
+    // Drawn from its own stream, keyed off the persona and day, so adding it never perturbs the main round-by-round draws.
+    const hour = Math.floor(rng(p.seed * 131_071 + day * 97 + 11)() * 24);
+    log.hour = hour;
     const gid = ORDER[(sessions + Math.floor(r() * 5)) % ORDER.length]!;
     const game = GAMES[gid];
     const domain = game.domain;
@@ -85,7 +90,7 @@ export function runPersona(p: Persona, o: RunOptions): RunResult {
         index = sessionIndex;
       }
       const level = game.levels[index]!;
-      const theta = abilityOn(p, domain, day);
+      const theta = abilityOn(p, domain, day, hour);
       const prob = trueSuccess(theta + 0.4 * (1 - Math.exp(-(model.exposures[gid] ?? 0) / 5)), level, game.a, family);
       const correct = r() < prob;
       log.rounds += 1;

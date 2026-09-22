@@ -53,8 +53,15 @@ export function makePersona(index: number, scenario: Scenario, seed: number, sta
   };
 }
 
-/** Domain ability for a persona on a given day, including scenario effects. */
-export function abilityOn(p: Persona, domain: Domain, day: number): number {
+/** Triangular evening dip, 0 outside 3pm-9pm and deepest at 6pm. Assumed shape, not fitted to any dataset. */
+function eveningWeight(hour: number): number {
+  const h = ((Math.round(hour) % 24) + 24) % 24;
+  if (h < 15 || h > 21) return 0;
+  return Math.max(0, 1 - Math.abs(h - 18) / 3);
+}
+
+/** Domain ability for a persona at a given day and hour, including scenario effects. Hour only matters for S8. */
+export function abilityOn(p: Persona, domain: Domain, day: number, hour = 12): number {
   let theta = p.theta0[domain] + (p.slopePerWeek * day) / 7;
   if (p.scenario === 'S4_depression') theta -= 0.3;
   if (p.scenario === 'S5_delirium' && day >= p.episodeStart && day < p.episodeStart + p.episodeLength) {
@@ -63,6 +70,7 @@ export function abilityOn(p: Persona, domain: Domain, day: number): number {
     theta -= depth;
   }
   if (p.scenario === 'S6_hearing' && (domain === 'verbal_memory' || domain === 'associative_memory')) theta -= 0.6;
+  if (p.scenario === 'S8_evening') theta -= 2.2 * eveningWeight(hour);
   return theta;
 }
 

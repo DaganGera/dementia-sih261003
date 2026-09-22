@@ -9,11 +9,13 @@ import {
   initTrend,
   isPriorDominated,
   stageForecast,
+  timeOfDay,
   updateTrend,
   type AbruptResult,
   type AcuteChecklist,
   type HorizonForecast,
   type M2Model,
+  type TimeOfDayResult,
   type TrendState,
 } from '@hillpath/ml';
 import m2Json from '@hillpath/ml/models/m2/m2-ordinal-sim-0.1.json';
@@ -88,6 +90,22 @@ export function abruptNow(core: AppCore): AbruptResult {
   }
   const today = Math.floor((Date.now() - t0) / DAY);
   return abruptChange(series, today, acuteLast14Days(core), APP_ABRUPT);
+}
+
+export interface TimeOfDayView extends TimeOfDayResult {
+  synthetic: boolean;
+}
+
+/** F24, Simulated: how a person's own play compares across the day. Descriptive only, never fed into the stage estimate or trend. */
+export function timeOfDayNow(core: AppCore): TimeOfDayView {
+  const samples: Array<{ hour: number; excess: number }> = [];
+  let synthetic = false;
+  for (const r of core.replica.list('session')) {
+    if (typeof r.excess !== 'number' || typeof r.started_at !== 'number') continue;
+    samples.push({ hour: new Date(Number(r.started_at)).getHours(), excess: r.excess });
+    if (r.synthetic) synthetic = true;
+  }
+  return { ...timeOfDay(samples), synthetic };
 }
 
 export function adherence(core: AppCore, days = 7): { scheduled: number; taken: number; unconfirmed: number } {

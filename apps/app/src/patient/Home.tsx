@@ -1,10 +1,11 @@
 import type { ScoredGameId } from '@hillpath/contracts';
 import { hydrationPrompt, occurrences, statusAt, unconfirmedMessageForPatient, confirmDose, type ReminderRule } from '@hillpath/core';
-import { GAMES } from '@hillpath/ml';
-import { CalendarCheck, HandWaving, Images, MusicNotes, Play } from '@phosphor-icons/react';
+import { calmingSuggestion, dayPart, GAMES } from '@hillpath/ml';
+import { CalendarCheck, HandWaving, Images, MoonStars, MusicNotes, Play } from '@phosphor-icons/react';
 import { useEffect, useMemo, useState } from 'react';
 import type { AppCore } from '../lib/core';
 import { getSettings, listEvents, listFaces, listPlaces, listReminders, listSessions, raiseAlert, writeEvent } from '../lib/care';
+import { timeOfDayNow } from '../lib/insights';
 import { go } from '../lib/router';
 import { smsHref } from '../lib/sms';
 import { say } from '../lib/voice';
@@ -28,6 +29,7 @@ export function PatientHome({ core }: { core: AppCore }) {
   const v = useVersion();
   const settings = getSettings(core);
   const game = useMemo(() => nextGame(core), [core, v]);
+  const evening = useMemo(() => dayPart(new Date().getHours()) === 'evening' && timeOfDayNow(core).eveningDip, [core, v]);
   const due = useDueReminders(core);
   const [active, setActive] = useState<Due | null>(null);
   const [helpSent, setHelpSent] = useState(false);
@@ -45,6 +47,12 @@ export function PatientHome({ core }: { core: AppCore }) {
 
   return (
     <PatientScreen title={`Hello, ${name}`} onHear={() => void say(core, 'greeting', `Hello ${name}. Would you like to play a little?`)}>
+      {evening && (
+        <div className="card" role="note" data-testid="evening-note">
+          <p className="flex items-center gap-2 text-xl font-bold"><MoonStars size={28} aria-hidden />A gentle evening</p>
+          <p className="mt-1">{calmingSuggestion()}</p>
+        </div>
+      )}
       <BigButton primary onClick={() => go('patient', 'play', game)} className="w-full py-6">
         <Play size={36} weight="fill" aria-hidden />
         Play: {GAMES[game].title}

@@ -1,10 +1,10 @@
 import { escalation, planDelivery } from '@hillpath/core';
 import { smsHref } from '../lib/sms';
-import { STAGE_LABELS, explainForClinician, explainForFamily, abruptMessage, stageName } from '@hillpath/ml';
+import { calmingSuggestion, DAY_PART_LABEL, DAY_PART_RANGE, STAGE_LABELS, explainForClinician, explainForFamily, abruptMessage, stageName } from '@hillpath/ml';
 import { useMemo } from 'react';
 import type { AppCore } from '../lib/core';
 import { listAlerts, listSessions, getSettings } from '../lib/care';
-import { abruptNow, adherence, bands, stageNow, stageOutlook, trend, weekSummary } from '../lib/insights';
+import { abruptNow, adherence, bands, stageNow, stageOutlook, timeOfDayNow, trend, weekSummary } from '../lib/insights';
 import { useVersion } from '../lib/state';
 import { AbilityBands, ForecastTable } from '../ui/charts';
 import { BigButton, SimulatedRibbon, StateNote, Tag } from '../ui/kit';
@@ -18,7 +18,7 @@ export function Dashboard({ core }: { core: AppCore }) {
   const view = useMemo(() => {
     const stage = stageNow(core);
     const top = stage && !stage.abstain ? stage.probs.indexOf(Math.max(...stage.probs)) : 0;
-    return { stage, tr: trend(core, top), abrupt: abruptNow(core), week: weekSummary(core), adh: adherence(core), sessions: listSessions(core), alerts: listAlerts(core) };
+    return { stage, tr: trend(core, top), abrupt: abruptNow(core), week: weekSummary(core), adh: adherence(core), sessions: listSessions(core), alerts: listAlerts(core), tod: timeOfDayNow(core) };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [core, v]);
 
@@ -89,6 +89,34 @@ export function Dashboard({ core }: { core: AppCore }) {
           <p className="mt-2">Complete the monthly check to see a range. It takes about 10 minutes.</p>
         ) : (
           <StageBlock stage={view.stage} />
+        )}
+      </section>
+
+      <section aria-labelledby="h-tod" className="card" data-testid="tod-card">
+        <h2 id="h-tod" className="text-2xl font-bold">Time of day</h2>
+        {view.tod.synthetic && <SimulatedRibbon />}
+        {!view.tod.enough ? (
+          <p className="mt-2">Not enough activity yet to see a pattern. This needs at least {view.tod.minPerGroup} evening sessions and {view.tod.minPerGroup} at other times.</p>
+        ) : (
+          <>
+            <table className="mt-2 w-full text-left">
+              <thead><tr><th scope="col">Time</th><th scope="col">Sessions</th></tr></thead>
+              <tbody className="tnum">
+                {view.tod.parts.map((p) => (
+                  <tr key={p.part}><th scope="row" className="font-normal">{DAY_PART_LABEL[p.part]} <span className="text-muted">({DAY_PART_RANGE[p.part]})</span></th><td>{p.n}</td></tr>
+                ))}
+              </tbody>
+            </table>
+            {view.tod.eveningDip ? (
+              <div className="mt-3" role="note" data-testid="evening-dip">
+                <p className="font-bold">Evenings seem harder for {settings.patient_name || 'them'}.</p>
+                <p className="mt-1">{calmingSuggestion()}</p>
+                <p className="mt-2 text-sm text-muted">Based on their own recent sessions, against an assumed pattern shape. Not a diagnosis, and not used in the screening range above.</p>
+              </div>
+            ) : (
+              <p className="mt-3">No clear evening pattern so far.</p>
+            )}
+          </>
         )}
       </section>
 
