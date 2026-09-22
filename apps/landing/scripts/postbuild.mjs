@@ -1,8 +1,7 @@
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const origin = (process.env.SITE_ORIGIN ?? '').replace(/\/$/, '');
-if (!origin) throw new Error('SITE_ORIGIN is not set');
+const origin = (process.env.SITE_ORIGIN ?? 'https://mindcare-ai-three.vercel.app').replace(/\/$/, '');
 const dist = resolve(import.meta.dirname, '..', 'dist');
 const routes = ['/', '/privacy/', '/limitations/', '/credits/'];
 
